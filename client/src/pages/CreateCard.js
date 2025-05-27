@@ -39,7 +39,7 @@ function CreateCard() {
 
   const registerCardId = async (cleanedCode) => {
     try {
-      await axios.post('https://phuchwa-project.onrender.com/api/users/register', {
+      await axios.post('/api/users/register', {
         card_id: cleanedCode
       });
     } catch (err) {

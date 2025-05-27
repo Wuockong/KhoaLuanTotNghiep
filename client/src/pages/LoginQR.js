@@ -71,7 +71,7 @@ const LoginQR = () => {
   const login = async (id) => {
     try {
       setLoading(true);
-      const res = await axios.post('https://phuchwa-project.onrender.com/api/users/login', {
+      const res = await axios.post('/api/users/login', {
         card_id: id
       });
       localStorage.setItem('card_id', id);
