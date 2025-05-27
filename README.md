@@ -1,3 +1,4 @@
+Cấu trúc thư mục:
 src/
 ├── components/            → chứa các component tái sử dụng
 │   └── Navbar.js
@@ -20,4 +21,4 @@ src/
 Hướng dẫn cài đặt: clone -> terminal -> tại ..\KhoaLuanTotNghiep, ..\KhoaLuanTotNghiep\client, ..\KhoaLuanTotNghiep\server -> npm install (tải folder node_modules)
 
 Hướng dẫn khởi động:  1) terminal -> tại ..\KhoaLuanTotNghiep -> npm run dev 
-                      2) file explorer -> tại ..\KhoaLuanTotNghiep\server -> 2 click file start-server.bat
+                      2) file explorer -> tại ..\KhoaLuanTotNghiep -> 2 click file start-server.bat
