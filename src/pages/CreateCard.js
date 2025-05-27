@@ -1,27 +1,51 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
 import * as htmlToImage from 'html-to-image';
 import download from 'downloadjs';
 import Navbar from '../components/Navbar';
 import '../styles/buttons.css';
 import '../styles/common.css';
-import './CreateCard.css'; // 👈 Thêm CSS riêng cho hiệu ứng
+import './CreateCard.css';
+import axios from 'axios';
 
 function CreateCard() {
   const [code, setCode] = useState('');
   const [showQR, setShowQR] = useState(false);
+  const [loading, setLoading] = useState(false);
   const qrRef = useRef(null);
 
+  useEffect(() => {
+    if (showQR && qrRef.current) {
+      // Tự động tải ảnh QR sau khi render
+      const downloadTimeout = setTimeout(() => {
+        htmlToImage.toPng(qrRef.current, { backgroundColor: 'white' }).then((dataUrl) => {
+          download(dataUrl, 'qr-code.png');
+          setLoading(false);
+        });
+      }, 800); // delay nhỏ để QR được render
+
+      return () => clearTimeout(downloadTimeout);
+    }
+  }, [showQR]);
+
   const handleGenerateQR = () => {
-    if (code.trim()) {
+    const cleaned = code.trim();
+    if (cleaned) {
+      setLoading(true);
       setShowQR(true);
+      registerCardId(cleaned);
     }
   };
 
-  const handleDownload = () => {
-    htmlToImage.toPng(qrRef.current, { backgroundColor: 'white' }).then((dataUrl) => {
-      download(dataUrl, 'qr-code.png');
-    });
+  const registerCardId = async (cleanedCode) => {
+    try {
+      await axios.post('https://phuchwa-project.onrender.com/api/users/register', {
+        card_id: cleanedCode
+      });
+    } catch (err) {
+      console.warn('❌ Đăng ký thất bại!');
+      console.error(err);
+    }
   };
 
   return (
@@ -31,24 +55,22 @@ function CreateCard() {
         <div className="card-box">
           {!showQR ? (
             <>
-              <h2>Tạo thẻ vật lý</h2>
+              <h2>Đăng ký mã QR</h2>
               <input
                 type="text"
-                placeholder="Nhập mã số..."
+                placeholder="Nhập mã số đăng ký..."
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
                 className="input-box"
               />
-              <button className="animated-btn" onClick={handleGenerateQR}>Tạo QR</button>
+              <button className="animated-btn" onClick={handleGenerateQR} disabled={loading}>
+                {loading ? 'Đang xử lý...' : 'Tạo mã và tải về'}
+              </button>
             </>
           ) : (
             <div className="qr-section">
               <div className="qr-box qr-centered" ref={qrRef}>
-                <QRCodeCanvas value={code} size={300} />
-              </div>
-              <div className="button-row">
-                <button className="animated-btn" onClick={handleDownload}>Lưu mã QR</button>
-                <button className="animated-btn" onClick={() => window.location.href = '/login'}>Đăng nhập</button>
+                <QRCodeCanvas value={code.trim()} size={300} />
               </div>
             </div>
           )}

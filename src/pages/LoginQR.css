@@ -1,0 +1,42 @@
+.webcam-box {
+    width: 100%;
+    max-width: 480px;
+    aspect-ratio: 4 / 3;
+    border-radius: 12px;
+    border: 2px solid #2a52be;
+    display: block;
+    margin: 0 auto;
+    object-fit: cover;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+.card-box {
+    max-width: 600px;
+    width: 100%;
+  }
+  
+.drop-zone {
+  border: 2px dashed #2a52be;
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  background-color: #f9faff;
+  position: relative;
+  transition: background-color 0.3s ease;
+}
+
+.drop-zone:hover {
+  background-color: #eef4ff;
+}
+
+.drop-hint {
+  color: #1d3e94;
+  font-weight: bold;
+  margin-top: 1rem;
+  animation: fadein 0.5s ease;
+}
+
+@keyframes fadein {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
