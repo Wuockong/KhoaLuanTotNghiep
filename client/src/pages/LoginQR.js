@@ -76,13 +76,31 @@ function LoginQR() {
       const res = await axios.post('/api/users/login', { card_id });
       localStorage.setItem('card_id', card_id);
       setMessage('✅ Đăng nhập thành công!');
-      setTimeout(() => {
-        window.location.href = '/dashboard';
-      }, 1000);
+      checkMatching(card_id);
     } catch (err) {
       setMessage('❌ Đăng nhập thất bại.');
     }
   };
+
+  const checkMatching = async (card_id) => {
+  try {
+    const res = await axios.get('/api/matching');
+    console.log("Card ID:", card_id);
+    console.log("Matching data:", res.data);
+
+    const match = res.data.find((m) => m.elderlyId === card_id);
+    if (match) {
+      console.log("Matched:", match);
+      window.location.href = '/dashboard';
+    } else {
+      console.log("No matching found for this elderlyId.");
+      window.location.href = '/matching';
+    }
+  } catch (err) {
+    console.error("Error checking matching:", err);
+    window.location.href = '/dashboard';
+  }
+};
 
   return (
     <div className="container">
