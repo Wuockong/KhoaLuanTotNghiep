@@ -33,7 +33,16 @@ function LoginQR() {
       const code = jsQR(imageData.data, imageData.width, imageData.height);
       if (code && code.data !== cardId) {
         setCardId(code.data);
-        login(code.data);
+        try {
+          const parsed = JSON.parse(code.data);
+          if (parsed.card_id && parsed.role) {
+            login(parsed.card_id, parsed.role);
+          } else {
+            setMessage('❌ QR không hợp lệ (thiếu thông tin)');
+          }
+        } catch (err) {
+          setMessage('❌ QR không hợp lệ (không phải JSON)');
+        }
       }
     }
   };
@@ -71,10 +80,16 @@ function LoginQR() {
     }
   };
 
-  const login = async (card_id) => {
+  const login = async (card_id, role) => {
     try {
       const res = await axios.post('/api/users/login', { card_id });
+      const token = res.data.token;
+
       localStorage.setItem('card_id', card_id);
+      localStorage.setItem('user_id', card_id); // dùng làm user_id
+      localStorage.setItem('role', role);
+      localStorage.setItem('token', token); // lưu token
+
       setMessage('✅ Đăng nhập thành công!');
       checkMatching(card_id);
     } catch (err) {

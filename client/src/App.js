@@ -4,6 +4,11 @@ import CreateCard from './pages/CreateCard';
 import LoginQR from './pages/LoginQR';
 import Dashboard from './pages/Dashboard';
 import Navbar from './components/Navbar';
+import Payment_Elderly from './pages/Payment_Elderly';
+import Survey_Elderly from './pages/Survey_Elderly';
+import TestForm_Nurses from './pages/TestForm_Nurses';
+import Matching_Nurses from './pages/Matching_Nurses';
+
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('card_id'));
@@ -23,6 +28,11 @@ function App() {
         <Route path="/" element={isLoggedIn ? <Navigate to="/dashboard" /> : <LoginQR setIsLoggedIn={setIsLoggedIn} />} />
         <Route path="/register" element={isLoggedIn ? <Navigate to="/dashboard" /> : <CreateCard />} />
         <Route path="/dashboard" element={isLoggedIn ? <Dashboard /> : <Navigate to="/" />} />
+        <Route path="/payment-elderly" element={<Payment_Elderly />} />
+        <Route path="/survey-elderly" element={<Survey_Elderly />} />
+        <Route path="/testform-nurses" element={<TestForm_Nurses/>} />
+        <Route path="/matching-nurses" element={<Matching_Nurses/>} />
+
       </Routes>
     </Router>
   );

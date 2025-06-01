@@ -12,10 +12,17 @@ function CreateCard() {
   const qrRef = useRef(null);
 
   const handleGenerateQR = () => {
-    if (code.trim()) {
-      setShowQR(true);
-    }
-  };
+  if (code.trim()) {
+    const qrData = JSON.stringify({
+      card_id: code.trim(),
+      role: "nurses"
+    });
+    setCode(qrData); // cập nhật code thành nội dung JSON
+    setShowQR(true);
+    localStorage.setItem("card_id", code.trim());
+    localStorage.setItem("role", "nurses"); // lưu mặc định vai trò
+  }
+};
 
   // Tự động lưu QR sau khi render
   useEffect(() => {
@@ -46,7 +53,16 @@ function CreateCard() {
           </>
         ) : (
           <div className="qr-section">
-            <div className="qr-box qr-centered" ref={qrRef}>
+            <div
+              className="qr-box qr-centered"
+              ref={qrRef}
+              style={{
+                padding: '20px',
+                backgroundColor: 'white',
+                display: 'inline-block',
+                borderRadius: '8px'
+              }}
+            >
               <QRCodeCanvas value={code} size={300} />
             </div>
             <p>✅ Mã QR đã được lưu về máy!</p>

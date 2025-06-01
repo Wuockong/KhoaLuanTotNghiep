@@ -1,0 +1,67 @@
+/* Fullscreen form */
+.test-form-fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #fefefe;
+  z-index: 9999;
+  overflow-y: auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.test-form-fullscreen h2 {
+  text-align: center;
+  font-size: 1.8rem;
+  color: #333;
+}
+
+.question-block {
+  width: 100%;
+  max-width: 800px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 0 8px rgba(0,0,0,0.05);
+}
+
+.option-item {
+  display: block;
+  margin: 0.5rem 0;
+  font-weight: 500;
+}
+
+.submit-btn {
+  background-color: #007bff;
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+.submit-btn:hover {
+  background-color: #0056b3;
+}
+
+.test-loading {
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: #444;
+  z-index: 9999;
+}

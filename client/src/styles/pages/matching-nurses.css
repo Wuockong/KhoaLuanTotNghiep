@@ -1,0 +1,85 @@
+.matching-nurse-container {
+  padding: 2rem;
+  max-width: 1100px;
+  margin: auto;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.matching-nurse-container h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  color: #333;
+}
+
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  justify-content: space-between;
+}
+
+.filter-row input,
+.filter-row select {
+  flex: 1 1 200px;
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.elderly-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.elderly-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1.2rem;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #eee;
+  transition: transform 0.2s ease-in-out;
+}
+
+.elderly-card:hover {
+  transform: scale(1.02);
+}
+
+.elderly-card h4 {
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+  color: #007bff;
+}
+
+.elderly-card p {
+  margin: 0.3rem 0;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.match-btn {
+  margin-top: 1rem;
+  width: 100%;
+  padding: 0.6rem;
+  background-color: #007bff;
+  border: none;
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.match-btn:hover {
+  background-color: #0056b3;
+}
+
+@media (max-width: 600px) {
+  .filter-row {
+    flex-direction: column;
+  }
+}

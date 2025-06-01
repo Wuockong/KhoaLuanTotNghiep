@@ -1,0 +1,78 @@
+.payment-container {
+  max-width: 700px;
+  margin: auto;
+  padding: 1rem;
+  background: #f4faff;
+  border-radius: 10px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 1.6rem;
+}
+
+.no-service {
+  text-align: center;
+  color: #555;
+}
+
+.service-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.service-card {
+  background: #fff;
+  border-left: 5px solid #007bff;
+  padding: 1rem;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.total {
+  margin-top: 1.5rem;
+  font-size: 1.2rem;
+  text-align: center;
+}
+.total span {
+  color: #007a5c;
+  font-weight: bold;
+}
+
+.pay-btn, .download-btn {
+  display: block;
+  margin: 1rem auto;
+  padding: 10px 16px;
+  background-color: #007a5c;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.download-btn {
+  background-color: #0056a6;
+}
+
+.qr-section {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.qr-box {
+  margin: 1rem auto;
+  padding: 10px;
+  background: white;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+.success-msg {
+  margin-top: 1rem;
+  color: green;
+  font-weight: bold;
+}
