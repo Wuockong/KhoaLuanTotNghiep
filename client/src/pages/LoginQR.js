@@ -98,24 +98,25 @@ function LoginQR() {
   };
 
   const checkMatching = async (card_id) => {
-  try {
-    const res = await axios.get('/api/matching');
-    console.log("Card ID:", card_id);
-    console.log("Matching data:", res.data);
+    try {
+      const res = await axios.get('https://phuchwa-project.onrender.com/matching');
+      console.log("Card ID:", card_id);
+      console.log("Matching data:", res.data);
 
-    const match = res.data.find((m) => m.elderlyId === card_id);
-    if (match) {
-      console.log("Matched:", match);
+      const match = res.data.find((m) => m.elderlyId === card_id);
+      if (match) {
+        console.log("Matched:", match);
+        window.location.href = '/dashboard';
+      } else {
+        console.log("No matching found for this elderlyId.");
+        window.location.href = '/matching';
+      }
+    } catch (err) {
+      console.error("Error checking matching:", err);
       window.location.href = '/dashboard';
-    } else {
-      console.log("No matching found for this elderlyId.");
-      window.location.href = '/matching';
     }
-  } catch (err) {
-    console.error("Error checking matching:", err);
-    window.location.href = '/dashboard';
-  }
-};
+  };
+
 
   return (
     <div className="container">

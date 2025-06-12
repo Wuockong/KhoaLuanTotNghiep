@@ -9,7 +9,7 @@ function MatchingNursePage() {
   const nurse_id = localStorage.getItem('user_id');
 
   useEffect(() => {
-    fetch('/api/elderly', {
+    fetch('https://phuchwa-project.onrender.com/elderly', {
       headers: { 'Authorization': `Bearer ${token}` }
     })
       .then(res => res.json())
@@ -23,24 +23,26 @@ function MatchingNursePage() {
       });
   }, []);
 
-  const handleMatch = async (elderly_id) => {
-    try {
-      const res = await fetch('/api/matching', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ nurse_id, elderly_id })
-      });
 
-      const result = await res.json();
-      if (!res.ok) throw new Error(result.message || 'Lỗi');
-      alert('✅ Matching thành công');
-    } catch (err) {
-      alert('❌ Không thể matching: ' + err.message);
-    }
-  };
+const handleMatch = async (elderly_id) => {
+  try {
+    const res = await fetch('https://phuchwa-project.onrender.com/matching', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ nurse_id, elderly_id })
+    });
+
+    const result = await res.json();
+    if (!res.ok) throw new Error(result.message || 'Lỗi');
+    alert('✅ Matching thành công');
+  } catch (err) {
+    alert('❌ Không thể matching: ' + err.message);
+  }
+};
+
 
   const calculateAge = (dob) => {
     const birthDate = new Date(dob);

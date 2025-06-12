@@ -11,7 +11,9 @@ function TestForm({ onSubmit }) {
   const user_id = localStorage.getItem('user_id');
 
   useEffect(() => {
-    fetch('/api/test/questions/today', {
+    // API lấy câu hỏi hiện chưa có → để tạm trống:
+    /*
+    fetch(' chưa có ', {
       headers: { 'Authorization': `Bearer ${token}` }
     })
       .then(res => res.json())
@@ -20,11 +22,11 @@ function TestForm({ onSubmit }) {
         setLoading(false);
       })
       .catch(() => alert('Không tải được câu hỏi'));
+    */
+    setQuestions([]); // tạm thời set rỗng để không lỗi
+    setLoading(false);
   }, []);
 
-  const handleChange = (questionIndex, value) => {
-    setAnswers(prev => ({ ...prev, [questionIndex]: value }));
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,7 +42,7 @@ function TestForm({ onSubmit }) {
     };
 
     try {
-      const res = await fetch('/api/test/submit', {
+      const res = await fetch('https://phuchwa-project.onrender.com/test/submit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -48,6 +50,7 @@ function TestForm({ onSubmit }) {
         },
         body: JSON.stringify(payload)
       });
+
 
       const result = await res.json();
       if (!res.ok) throw new Error(result.message);

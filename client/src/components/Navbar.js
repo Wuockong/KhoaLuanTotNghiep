@@ -43,13 +43,6 @@ const Navbar = ({ isLoggedIn, setIsLoggedIn }) => {
       {menuOpen && isLoggedIn && (
         <div className="dropdown-menu right">
           <a href="/dashboard">👤 Thông tin</a>
-          {role === 'elderly' && (
-            <>
-              <a href="/survey-elderly">📋 Khảo sát</a>
-              <a href="/matching-elderly">🔗 Matching</a>
-              <a href="/payment-elderly">💰 Thanh toán</a>
-            </>
-          )}
           {role === 'nurses' && (
             <>
               <a href="/testform-nurses">📝 Làm bài test</a>
