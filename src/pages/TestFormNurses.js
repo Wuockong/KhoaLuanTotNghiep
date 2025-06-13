@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 // import "../styles/pages/testform-nurses.css";
 
-function TestForm({ onSubmit }) {
+function TestFormNurses({ onSubmit }) {
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState({});
   const [loading, setLoading] = useState(true);
@@ -103,4 +103,4 @@ function TestForm({ onSubmit }) {
   );
 }
 
-export default TestForm;
+export default TestFormNurses;
