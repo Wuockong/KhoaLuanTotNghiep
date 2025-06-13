@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 // import '../styles/pages/matching-nurses.css';
 
-function MatchingNursePage() {
+function MatchingNurses() {
   const [elderlies, setElderlies] = useState([]);
   const [filter, setFilter] = useState({
     city: "",
@@ -26,7 +26,7 @@ function MatchingNursePage() {
         alert("Không thể tải danh sách bệnh nhân");
         setLoading(false);
       });
-  }, []);
+  }, [token]);
 
   const handleMatch = async (elderly_id) => {
     try {
@@ -136,4 +136,4 @@ function MatchingNursePage() {
   );
 }
 
-export default MatchingNursePage;
+export default MatchingNurses;
