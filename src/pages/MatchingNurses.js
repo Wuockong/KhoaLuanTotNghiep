@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import '../assets/styles/pages/matching-nurses.css';
-import { getElderly } from "../services/elderlyService";
-import { postMatching } from "../services/matchingService";
 
 function MatchingNurses() {
   const [elderlies, setElderlies] = useState([]);
@@ -12,26 +10,37 @@ function MatchingNurses() {
     maxAge: "",
   });
   const [loading, setLoading] = useState(true);
+  const token = localStorage.getItem("token");
   const nurse_id = localStorage.getItem("user_id");
 
   useEffect(() => {
-    loadElderly();
-  }, []);
-
-  const loadElderly = async () => {
-    try {
-      const res = await getElderly();
-      setElderlies(res.data || []);
-    } catch {
-      alert("Không thể tải danh sách bệnh nhân");
-    } finally {
-      setLoading(false);
-    }
-  };
+    fetch("https://phuchwa-project.onrender.com/elderly", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setElderlies(data || []);
+        setLoading(false);
+      })
+      .catch(() => {
+        alert("Không thể tải danh sách bệnh nhân");
+        setLoading(false);
+      });
+  }, [token]);
 
   const handleMatch = async (elderly_id) => {
     try {
-      await postMatching({ nurse_id, elderly_id });
+      const res = await fetch("https://phuchwa-project.onrender.com/matching", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ nurse_id, elderly_id }),
+      });
+
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.message || "Lỗi");
       alert("✅ Matching thành công");
     } catch (err) {
       alert("❌ Không thể matching: " + err.message);
@@ -47,9 +56,13 @@ function MatchingNurses() {
   const filtered = elderlies.filter((el) => {
     const age = calculateAge(el.date_of_birth);
     const cityMatch = filter.city
-      ? el.current_address?.city?.toLowerCase().includes(filter.city.toLowerCase())
+      ? el.current_address?.city
+          ?.toLowerCase()
+          .includes(filter.city.toLowerCase())
       : true;
-    const genderMatch = filter.gender ? String(el.gender) === filter.gender : true;
+    const genderMatch = filter.gender
+      ? String(el.gender) === filter.gender
+      : true;
     const minAgeMatch = filter.minAge ? age >= parseInt(filter.minAge) : true;
     const maxAgeMatch = filter.maxAge ? age <= parseInt(filter.maxAge) : true;
     return cityMatch && genderMatch && minAgeMatch && maxAgeMatch;

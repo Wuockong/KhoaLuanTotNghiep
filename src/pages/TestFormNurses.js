@@ -1,53 +1,70 @@
 import React, { useEffect, useState } from "react";
 import "../assets/styles/pages/testform-nurses.css";
-import QuestionCard from "../components/QuestionCard";
-import { submitTest } from "../services/testService";
 
-function TestFormNurses() {
+function TestFormNurses({ onSubmit }) {
   const [questions, setQuestions] = useState([]);
-  const [selectedAnswers, setSelectedAnswers] = useState({});
-  const [score, setScore] = useState(null);
-  const [loading, setLoading] = useState(false); // thêm loading
+  const [answers, setAnswers] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  const token = localStorage.getItem("token");
+  // const user_id = localStorage.getItem("user_id");
 
   useEffect(() => {
-    // API lấy câu hỏi hiện chưa có → để tạm trống:
     /*
-    const loadQuestions = async () => {
-      setLoading(true);
-      const res = await getTestQuestions();
-      setQuestions(res.data);
-      setLoading(false);
-    };
-    loadQuestions();
+    fetch('API_URL_HERE', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(data => {
+        setQuestions(data);
+        setLoading(false);
+      })
+      .catch(() => alert('Không tải được câu hỏi'));
     */
-    setQuestions([]); // tạm thời set rỗng để không lỗi
+    setQuestions([]); // Temporary fallback
+    setLoading(false);
   }, []);
 
-  const handleAnswerSelect = (questionId, answer) => {
-    setSelectedAnswers((prev) => ({ ...prev, [questionId]: answer }));
-  };
-
-  // Thêm handleChange cho đúng:
-  const handleChange = (questionIndex, answer) => {
-    handleAnswerSelect(questionIndex, answer);
+  // ✅ FIXED: handleChange function
+  const handleChange = (index, value) => {
+    setAnswers((prev) => ({
+      ...prev,
+      [index]: value,
+    }));
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // thêm để không reload form
-    try {
-      const token = localStorage.getItem("token");
-      const payload = {
-        questions: Object.keys(selectedAnswers).map((questionId) => ({
-          question_id: questionId,
-          answer: selectedAnswers[questionId],
-        })),
-      };
+    e.preventDefault();
 
-      const res = await submitTest(payload);
-      alert("✅ Nộp bài thành công");
-      setScore(res.data.score);
+    const payload = {
+      questions: questions.map((q, index) => ({
+        question: q.question,
+        difficulty: q.difficulty,
+        options: q.options,
+        correct_answer: q.correct_answer,
+        user_answer: answers[index] || "",
+      })),
+    };
+
+    try {
+      const res = await fetch(
+        "https://phuchwa-project.onrender.com/test/submit",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.message);
+      alert("✅ Nộp bài thành công!");
+      onSubmit && onSubmit();
     } catch (err) {
-      alert("❌ Không thể nộp bài: " + err.message);
+      alert("❌ Lỗi nộp bài: " + err.message);
     }
   };
 
@@ -70,7 +87,7 @@ function TestFormNurses() {
                   type="radio"
                   name={`question-${index}`}
                   value={opt}
-                  onChange={(e) => handleChange(q.id, e.target.value)}
+                  onChange={(e) => handleChange(index, e.target.value)}
                   required
                 />{" "}
                 {opt}
@@ -82,7 +99,6 @@ function TestFormNurses() {
           Nộp bài
         </button>
       </form>
-      {score !== null && <p>Điểm của bạn: {score}</p>}
     </div>
   );
 }
