@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import Webcam from "react-webcam";
 import jsQR from "jsqr";
 import "../assets/styles/pages/login-qr.css";
@@ -15,14 +15,38 @@ function LoginQR() {
   const [mode, setMode] = useState("camera");
   const [isDragging, setIsDragging] = useState(false);
 
-  useEffect(() => {
-    if (mode === "camera") {
-      const interval = setInterval(scanQRCode, 1000);
-      return () => clearInterval(interval);
-    }
-  }, [mode]);
+  const handleLogin = async (card_id, role) => {
+    try {
+      const res = await loginApi({ card_id });
+      const token = res.data.token;
 
-  const scanQRCode = () => {
+      localStorage.setItem("card_id", card_id);
+      localStorage.setItem("user_id", card_id);
+      localStorage.setItem("role", role);
+      localStorage.setItem("token", token);
+
+      setMessage("✅ Đăng nhập thành công!");
+      checkMatching(card_id);
+    } catch (err) {
+      setMessage("❌ Đăng nhập thất bại.");
+    }
+  };
+
+  const checkMatching = async (card_id) => {
+    try {
+      const res = await getMatching();
+      const match = res.data.find((m) => m.elderlyId === card_id);
+      if (match) {
+        window.location.href = "/dashboard";
+      } else {
+        window.location.href = "/matching";
+      }
+    } catch (err) {
+      window.location.href = "/dashboard";
+    }
+  };
+
+  const scanQRCode = useCallback(() => {
     const video = webcamRef.current?.video;
     if (video && video.readyState === 4) {
       const canvas = canvasRef.current;
@@ -37,16 +61,50 @@ function LoginQR() {
         try {
           const parsed = JSON.parse(code.data);
           if (parsed.card_id && parsed.role) {
-            handleLogin(parsed.card_id, parsed.role);
+            // 🟢 Gọi login trực tiếp ở đây
+            loginApi({ card_id: parsed.card_id })
+              .then((res) => {
+                const token = res.data.token;
+                localStorage.setItem("card_id", parsed.card_id);
+                localStorage.setItem("user_id", parsed.card_id);
+                localStorage.setItem("role", parsed.role);
+                localStorage.setItem("token", token);
+                setMessage("✅ Đăng nhập thành công!");
+                checkMatching(parsed.card_id);
+              })
+              .catch(() => {
+                setMessage("❌ Đăng nhập thất bại.");
+              });
           } else {
             setMessage("❌ QR không hợp lệ (thiếu thông tin)");
           }
-        } catch (err) {
+        } catch {
           setMessage("❌ QR không hợp lệ (không phải JSON)");
         }
       }
     }
-  };
+  }, [cardId]);
+  
+
+  useEffect(() => {
+    if (mode === "camera") {
+      const interval = setInterval(scanQRCode, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [mode, scanQRCode]);
+
+  useEffect(() => {
+    const savedCardId = localStorage.getItem("card_id");
+    if (savedCardId) {
+      setCardId(savedCardId);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (cardId) {
+      localStorage.setItem("card_id", cardId);
+    }
+  }, [cardId]);
 
   const handleImageUpload = (file) => {
     const img = new Image();
@@ -87,45 +145,6 @@ function LoginQR() {
     const file = e.dataTransfer.files[0];
     if (file) {
       handleImageUpload(file);
-    }
-  };
-
-  const handleLogin = async (card_id, role) => {
-    try {
-      const res = await loginApi({ card_id }); // dùng authService.login()
-
-      const token = res.data.token;
-
-      localStorage.setItem("card_id", card_id);
-      localStorage.setItem("user_id", card_id); // dùng làm user_id
-      localStorage.setItem("role", role);
-      localStorage.setItem("token", token); // lưu token
-
-      setMessage("✅ Đăng nhập thành công!");
-      checkMatching(card_id);
-    } catch (err) {
-      setMessage("❌ Đăng nhập thất bại.");
-    }
-  };
-
-  const checkMatching = async (card_id) => {
-    try {
-      const res = await getMatching();
-
-      console.log("Card ID:", card_id);
-      console.log("Matching data:", res.data);
-
-      const match = res.data.find((m) => m.elderlyId === card_id);
-      if (match) {
-        console.log("Matched:", match);
-        window.location.href = "/dashboard";
-      } else {
-        console.log("No matching found for this elderlyId.");
-        window.location.href = "/matching";
-      }
-    } catch (err) {
-      console.error("Error checking matching:", err);
-      window.location.href = "/dashboard";
     }
   };
 
