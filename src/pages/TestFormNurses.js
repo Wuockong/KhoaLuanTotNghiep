@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import "../assets/styles/pages/testform-nurses.css";
-import QuestionCard from "../components/QuestionCard";
+// import QuestionCard from "../components/QuestionCard";
 import { submitTest } from "../services/testService";
 
 function TestFormNurses() {
   const [questions, setQuestions] = useState([]);
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [score, setScore] = useState(null);
-  const [loading, setLoading] = useState(false); // thêm loading
-
+  // const [loading, setLoading] = useState(false); // thêm loading
+  const [loading] = useState(false); // thêm loading
   useEffect(() => {
     // API lấy câu hỏi hiện chưa có → để tạm trống:
     /*
@@ -35,7 +35,7 @@ function TestFormNurses() {
   const handleSubmit = async (e) => {
     e.preventDefault(); // thêm để không reload form
     try {
-      const token = localStorage.getItem("token");
+      // const token = localStorage.getItem("token");
       const payload = {
         questions: Object.keys(selectedAnswers).map((questionId) => ({
           question_id: questionId,

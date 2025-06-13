@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import '../assets/styles/pages/matching-nurses.css';
+import "../assets/styles/pages/matching-nurses.css";
 import { getElderly } from "../services/elderlyService";
 import { postMatching } from "../services/matchingService";
 
@@ -13,21 +13,30 @@ function MatchingNurses() {
   });
   const [loading, setLoading] = useState(true);
   const nurse_id = localStorage.getItem("user_id");
-
+  // const loadElderly = async () => {
+  //   try {
+  //     const res = await getElderly();
+  //     setElderlies(res.data || []);
+  //   } catch {
+  //     alert("Không thể tải danh sách bệnh nhân");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   useEffect(() => {
-    loadElderly();
-  }, []);
+    const fetchData = async () => {
+      try {
+        const res = await getElderly();
+        setElderlies(res.data || []);
+      } catch {
+        alert("Không thể tải danh sách bệnh nhân");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const loadElderly = async () => {
-    try {
-      const res = await getElderly();
-      setElderlies(res.data || []);
-    } catch {
-      alert("Không thể tải danh sách bệnh nhân");
-    } finally {
-      setLoading(false);
-    }
-  };
+    fetchData();
+  }, []);
 
   const handleMatch = async (elderly_id) => {
     try {
@@ -47,9 +56,13 @@ function MatchingNurses() {
   const filtered = elderlies.filter((el) => {
     const age = calculateAge(el.date_of_birth);
     const cityMatch = filter.city
-      ? el.current_address?.city?.toLowerCase().includes(filter.city.toLowerCase())
+      ? el.current_address?.city
+          ?.toLowerCase()
+          .includes(filter.city.toLowerCase())
       : true;
-    const genderMatch = filter.gender ? String(el.gender) === filter.gender : true;
+    const genderMatch = filter.gender
+      ? String(el.gender) === filter.gender
+      : true;
     const minAgeMatch = filter.minAge ? age >= parseInt(filter.minAge) : true;
     const maxAgeMatch = filter.maxAge ? age <= parseInt(filter.maxAge) : true;
     return cityMatch && genderMatch && minAgeMatch && maxAgeMatch;
