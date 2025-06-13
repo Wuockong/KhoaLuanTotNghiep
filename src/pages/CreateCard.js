@@ -2,9 +2,9 @@ import React, { useState, useRef, useEffect } from "react";
 import { QRCodeCanvas } from "qrcode.react";
 import * as htmlToImage from "html-to-image";
 import download from "downloadjs";
-// import '../styles/pages/create-card.css';
-// import '../styles/base/buttons.css';
-// import '../styles/base/common.css';
+import '../assets/styles/pages/create-card.css';
+import '../assets/styles/base/buttons.css';
+import '../assets/styles/base/common.css';
 
 function CreateCard() {
   const [code, setCode] = useState("");

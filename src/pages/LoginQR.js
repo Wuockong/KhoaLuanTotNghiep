@@ -2,9 +2,9 @@ import React, { useRef, useState, useEffect } from "react";
 import Webcam from "react-webcam";
 import jsQR from "jsqr";
 import axios from "axios";
-// import '../styles/pages/login-qr.css';
-// import '../styles/base/common.css';
-// import '../styles/base/buttons.css';
+import '../assets/styles/pages/login-qr.css';
+import '../assets/styles/base/common.css';
+import '../assets/styles/base/buttons.css';
 
 function LoginQR() {
   const webcamRef = useRef(null);
