@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-// import '../styles/pages/matching-nurses.css';
+import '../assets/styles/pages/matching-nurses.css';
 
 function MatchingNurses() {
   const [elderlies, setElderlies] = useState([]);
