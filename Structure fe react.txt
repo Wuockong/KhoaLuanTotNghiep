@@ -1,0 +1,21 @@
+/my-react-app
+│── /public            # Chứa các file tĩnh (favicon, index.html, hình ảnh,...)
+│── /src               # Thư mục chính chứa code nguồn
+│   │── /assets        # Chứa hình ảnh, fonts, styles, icons,...
+│   │── /components    # Chứa các component dùng chung (Button, Modal, Input,...)
+│   │── /layouts       # Chứa các layout chính (MainLayout, AuthLayout,...)
+│   │── /pages         # Chứa các trang của ứng dụng (Home, Login, Dashboard,...)
+│   │── /hooks         # Chứa các custom hooks (useAuth, useFetch,...)
+│   │── /services      # Chứa các service để gọi API (authService, userService,...)
+│   │── /context       # Chứa các Context API (AuthContext, ThemeContext,...)
+│   │── /store         # Chứa Redux store (actions, reducers, slices,...)
+│   │── /routes        # Chứa định tuyến (AppRoutes, ProtectedRoute,...)
+│   │── /utils         # Chứa các hàm tiện ích (formatDate, debounce,...)
+│   │── /constants     # Chứa các hằng số (API_URL, roles, messages,...)
+│   │── App.jsx        # Component gốc của ứng dụng
+│   │── main.jsx       # Điểm vào chính của ứng dụng (ReactDOM.render)
+│── /tests             # Chứa các file test (unit test, integration test)
+│── .gitignore         # File để loại trừ các file không cần thiết khi push lên Git
+│── package.json       # File cấu hình npm/yarn
+│── vite.config.js     # Cấu hình Vite (hoặc webpack nếu dùng Webpack)
+│── README.md          # Hướng dẫn sử dụng dự án

@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import '../styles/components/navbar.css';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+// import '../styles/components/navbar.css';
 
-const role = localStorage.getItem('role');
+const role = localStorage.getItem("role");
 
 const Navbar = ({ isLoggedIn, setIsLoggedIn }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem('card_id');
+    localStorage.removeItem("card_id");
     setIsLoggedIn(false);
     setMenuOpen(false);
-    navigate('/');
+    navigate("/");
   };
 
   const closeMenu = () => setMenuOpen(false);
@@ -27,12 +27,22 @@ const Navbar = ({ isLoggedIn, setIsLoggedIn }) => {
           {isLoggedIn ? (
             <>
               <span className="bell">🔔 Thông Báo</span>
-              <button className="account-button" onClick={() => setMenuOpen(!menuOpen)}>👤 Tài khoản</button>
+              <button
+                className="account-button"
+                onClick={() => setMenuOpen(!menuOpen)}>
+                👤 Tài khoản
+              </button>
             </>
           ) : (
             <>
-              <button className="account-button" onClick={() => navigate('/register')}>Tạo QR</button>
-              <button className="account-button" onClick={() => navigate('/')}>Đăng nhập</button>
+              <button
+                className="account-button"
+                onClick={() => navigate("/register")}>
+                Tạo QR
+              </button>
+              <button className="account-button" onClick={() => navigate("/")}>
+                Đăng nhập
+              </button>
             </>
           )}
         </div>
@@ -43,13 +53,13 @@ const Navbar = ({ isLoggedIn, setIsLoggedIn }) => {
       {menuOpen && isLoggedIn && (
         <div className="dropdown-menu right">
           <a href="/dashboard">👤 Thông tin</a>
-          {role === 'nurses' && (
+          {role === "nurses" && (
             <>
               <a href="/testform-nurses">📝 Làm bài test</a>
               <a href="/matching-nurses">🔗 Matching</a>
             </>
           )}
-          {role === 'mentor' && (
+          {role === "mentor" && (
             <>
               <a href="/manage-tests">📋 Quản lý đề thi</a>
             </>

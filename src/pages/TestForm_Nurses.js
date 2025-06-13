@@ -1,19 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import '../styles/pages/testform-nurses.css';
-
+import React, { useEffect, useState } from "react";
+// import "../styles/pages/testform-nurses.css";
 
 function TestForm({ onSubmit }) {
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState({});
   const [loading, setLoading] = useState(true);
 
-  const token = localStorage.getItem('token');
-  const user_id = localStorage.getItem('user_id');
+  const token = localStorage.getItem("token");
+  // const user_id = localStorage.getItem("user_id");
 
   useEffect(() => {
-    // API lấy câu hỏi hiện chưa có → để tạm trống:
     /*
-    fetch(' chưa có ', {
+    fetch('API_URL_HERE', {
       headers: { 'Authorization': `Bearer ${token}` }
     })
       .then(res => res.json())
@@ -23,10 +21,17 @@ function TestForm({ onSubmit }) {
       })
       .catch(() => alert('Không tải được câu hỏi'));
     */
-    setQuestions([]); // tạm thời set rỗng để không lỗi
+    setQuestions([]); // Temporary fallback
     setLoading(false);
   }, []);
 
+  // ✅ FIXED: handleChange function
+  const handleChange = (index, value) => {
+    setAnswers((prev) => ({
+      ...prev,
+      [index]: value,
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,27 +42,29 @@ function TestForm({ onSubmit }) {
         difficulty: q.difficulty,
         options: q.options,
         correct_answer: q.correct_answer,
-        user_answer: answers[index] || ""
-      }))
+        user_answer: answers[index] || "",
+      })),
     };
 
     try {
-      const res = await fetch('https://phuchwa-project.onrender.com/test/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(payload)
-      });
-
+      const res = await fetch(
+        "https://phuchwa-project.onrender.com/test/submit",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
+        }
+      );
 
       const result = await res.json();
       if (!res.ok) throw new Error(result.message);
-      alert('✅ Nộp bài thành công!');
+      alert("✅ Nộp bài thành công!");
       onSubmit && onSubmit();
     } catch (err) {
-      alert('❌ Lỗi nộp bài: ' + err.message);
+      alert("❌ Lỗi nộp bài: " + err.message);
     }
   };
 
@@ -69,7 +76,11 @@ function TestForm({ onSubmit }) {
       <form onSubmit={handleSubmit}>
         {questions.map((q, index) => (
           <div key={index} className="question-block">
-            <p><strong>{index + 1}. {q.question}</strong></p>
+            <p>
+              <strong>
+                {index + 1}. {q.question}
+              </strong>
+            </p>
             {q.options.map((opt, i) => (
               <label key={i} className="option-item">
                 <input
@@ -78,12 +89,15 @@ function TestForm({ onSubmit }) {
                   value={opt}
                   onChange={(e) => handleChange(index, e.target.value)}
                   required
-                /> {opt}
+                />{" "}
+                {opt}
               </label>
             ))}
           </div>
         ))}
-        <button type="submit" className="submit-btn">Nộp bài</button>
+        <button type="submit" className="submit-btn">
+          Nộp bài
+        </button>
       </form>
     </div>
   );
