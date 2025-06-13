@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-// import "../styles/pages/testform-nurses.css";
+import "../assets/styles/pages/testform-nurses.css";
 
 function TestFormNurses({ onSubmit }) {
   const [questions, setQuestions] = useState([]);
