@@ -1,74 +1,80 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import '../assets/styles/components/navbar.css';
+import "../assets/styles/components/navbar.css";
 
-const role = localStorage.getItem("role");
-
-const Navbar = ({ isLoggedIn, setIsLoggedIn }) => {
-  const [menuOpen, setMenuOpen] = useState(false);
+function Navbar() {
   const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [role, setRole] = useState("");
+  const [showMenu, setShowMenu] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const storedRole = localStorage.getItem("role");
+
+    if (token) {
+      setIsLoggedIn(true);
+      setRole(storedRole);
+    } else {
+      setIsLoggedIn(false);
+      setRole("");
+    }
+  }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("card_id");
+    localStorage.clear();
     setIsLoggedIn(false);
-    setMenuOpen(false);
+    setRole("");
     navigate("/");
   };
 
-  const closeMenu = () => setMenuOpen(false);
+  const toggleMenu = () => {
+    setShowMenu((prev) => !prev);
+  };
 
   return (
     <>
-      <header className="navbar-full">
-        <div className="navbar-left">
-          <div className="logo">PHUCHWA</div>
-        </div>
-        <div className="navbar-right">
-          {isLoggedIn ? (
-            <>
-              <span className="bell">🔔 Thông Báo</span>
-              <button
-                className="account-button"
-                onClick={() => setMenuOpen(!menuOpen)}>
-                👤 Tài khoản
-              </button>
-            </>
-          ) : (
-            <>
-              <button
-                className="account-button"
-                onClick={() => navigate("/register")}>
-                Tạo QR
-              </button>
-              <button className="account-button" onClick={() => navigate("/")}>
-                Đăng nhập
-              </button>
-            </>
-          )}
-        </div>
-      </header>
+      <div className="navbar-full">
+        <div className="logo">🌸 PhucHwa</div>
 
-      {/* Overlay & Dropdown */}
-      {menuOpen && <div className="menu-overlay" onClick={closeMenu} />}
-      {menuOpen && isLoggedIn && (
-        <div className="dropdown-menu right">
-          <a href="/dashboard">👤 Thông tin</a>
-          {role === "nurses" && (
-            <>
-              <a href="/testform-nurses">📝 Làm bài test</a>
-              <a href="/matching-nurses">🔗 Matching</a>
-            </>
-          )}
-          {role === "mentor" && (
-            <>
-              <a href="/manage-tests">📋 Quản lý đề thi</a>
-            </>
-          )}
-          <button onClick={handleLogout}>🚪 Đăng xuất</button>
-        </div>
+        {isLoggedIn && (
+          <div className="navbar-right">
+            <div className="bell" onClick={toggleMenu} style={{ cursor: "pointer" }}>
+              📋 Menu
+            </div>
+            <button onClick={handleLogout} className="account-button">
+              🚪 Đăng xuất
+            </button>
+          </div>
+        )}
+      </div>
+
+      {showMenu && (
+        <>
+          <div className="menu-overlay" onClick={toggleMenu}></div>
+          <div className="dropdown-menu">
+            <a href="/dashboard">🏠 Trang chủ</a>
+
+            {role === "nurses" && (
+              <>
+                <a href="/testform-nurses">📝 Làm bài kiểm tra</a>
+                <a href="/matching-nurses">🔗 Kết nối bệnh nhân</a>
+                <a href="/transaction">💳 Quản lý hợp đồng</a>
+                <a href="/feedback">📝 Gửi phản hồi</a>
+                <a href="/service-log">📋 Nhật ký chăm sóc</a>
+              </>
+            )}
+
+            {role === "mentor" && (
+              <>
+                <a href="/manage-tests">📋 Quản lý đề kiểm tra</a>
+              </>
+            )}
+          </div>
+        </>
       )}
     </>
   );
-};
+}
 
 export default Navbar;

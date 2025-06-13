@@ -7,13 +7,16 @@ function TestFormNurses() {
   const [questions, setQuestions] = useState([]);
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [score, setScore] = useState(null);
+  const [loading, setLoading] = useState(false); // thêm loading
 
   useEffect(() => {
     // API lấy câu hỏi hiện chưa có → để tạm trống:
     /*
     const loadQuestions = async () => {
+      setLoading(true);
       const res = await getTestQuestions();
       setQuestions(res.data);
+      setLoading(false);
     };
     loadQuestions();
     */
@@ -24,7 +27,13 @@ function TestFormNurses() {
     setSelectedAnswers((prev) => ({ ...prev, [questionId]: answer }));
   };
 
-  const handleSubmit = async () => {
+  // Thêm handleChange cho đúng:
+  const handleChange = (questionIndex, answer) => {
+    handleAnswerSelect(questionIndex, answer);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // thêm để không reload form
     try {
       const token = localStorage.getItem("token");
       const payload = {
@@ -61,7 +70,7 @@ function TestFormNurses() {
                   type="radio"
                   name={`question-${index}`}
                   value={opt}
-                  onChange={(e) => handleChange(index, e.target.value)}
+                  onChange={(e) => handleChange(q.id, e.target.value)}
                   required
                 />{" "}
                 {opt}
@@ -73,6 +82,7 @@ function TestFormNurses() {
           Nộp bài
         </button>
       </form>
+      {score !== null && <p>Điểm của bạn: {score}</p>}
     </div>
   );
 }

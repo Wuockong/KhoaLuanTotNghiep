@@ -1,10 +1,10 @@
 import React, { useRef, useState, useEffect } from "react";
 import Webcam from "react-webcam";
 import jsQR from "jsqr";
-import '../assets/styles/pages/login-qr.css';
-import '../assets/styles/base/common.css';
-import '../assets/styles/base/buttons.css';
-import { login } from "../services/authService";
+import "../assets/styles/pages/login-qr.css";
+import "../assets/styles/base/common.css";
+import "../assets/styles/base/buttons.css";
+import { login as loginApi } from "../services/authService";
 import { getMatching } from "../services/matchingService";
 
 function LoginQR() {
@@ -48,15 +48,58 @@ function LoginQR() {
     }
   };
 
+  const handleImageUpload = (file) => {
+    const img = new Image();
+    const reader = new FileReader();
+    reader.onload = () => {
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const code = jsQR(imageData.data, canvas.width, canvas.height);
+        if (code) {
+          setCardId(code.data);
+          try {
+            const parsed = JSON.parse(code.data);
+            if (parsed.card_id && parsed.role) {
+              handleLogin(parsed.card_id, parsed.role);
+            } else {
+              setMessage("❌ QR không hợp lệ (thiếu thông tin)");
+            }
+          } catch (err) {
+            setMessage("❌ QR không hợp lệ (không phải JSON)");
+          }
+        } else {
+          setMessage("❌ Không tìm thấy mã QR!");
+        }
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const onDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      handleImageUpload(file);
+    }
+  };
+
   const handleLogin = async (card_id, role) => {
     try {
-      const res = await login({ card_id });
+      const res = await loginApi({ card_id }); // dùng authService.login()
+
       const token = res.data.token;
 
       localStorage.setItem("card_id", card_id);
-      localStorage.setItem("user_id", card_id);
+      localStorage.setItem("user_id", card_id); // dùng làm user_id
       localStorage.setItem("role", role);
-      localStorage.setItem("token", token);
+      localStorage.setItem("token", token); // lưu token
 
       setMessage("✅ Đăng nhập thành công!");
       checkMatching(card_id);
@@ -68,13 +111,20 @@ function LoginQR() {
   const checkMatching = async (card_id) => {
     try {
       const res = await getMatching();
+
+      console.log("Card ID:", card_id);
+      console.log("Matching data:", res.data);
+
       const match = res.data.find((m) => m.elderlyId === card_id);
       if (match) {
+        console.log("Matched:", match);
         window.location.href = "/dashboard";
       } else {
+        console.log("No matching found for this elderlyId.");
         window.location.href = "/matching";
       }
     } catch (err) {
+      console.error("Error checking matching:", err);
       window.location.href = "/dashboard";
     }
   };

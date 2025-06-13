@@ -1,4 +1,3 @@
-// pages/ContractFormPage.js
 import React from "react";
 import ContractFormWrapper from "../components/contract-form/ContractFormWrapper";
 
