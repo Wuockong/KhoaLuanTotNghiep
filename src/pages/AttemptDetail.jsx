@@ -16,6 +16,7 @@ function AttemptDetail() {
     // Giả lập kết quả - bạn có thể xử lý thực tế ở đây nếu có tính toán
     const total_questions = attempt.questions.length;
     const correct_answers = attempt.questions.filter(
+      // eslint-disable-next-line no-self-compare
       (q) => q.correct_answer === q.correct_answer // giả lập đúng hết
     ).length;
     const score = Math.round((correct_answers / total_questions) * 100);
