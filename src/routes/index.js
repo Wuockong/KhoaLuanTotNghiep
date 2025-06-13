@@ -9,6 +9,10 @@ import TestFormNurses from "../pages/TestFormNurses";
 // import MatchingNurses from "../pages/MatchingNurses";
 import AttemptDetail from "../pages/AttemptDetail";
 import ServiceLogForm from "../pages/ServiceLogForm";
+import ContractForm from "../pages/ContractForm";
+import MatchingPage from "../pages/MatchingPage";
+import FeedbackPage from "../pages/FeedbackPage";
+import TransactionPage from "../pages/TransactionPage";
 const AppRoutes = ({ isLoggedIn, setIsLoggedIn }) => {
   return (
     <Routes>
@@ -34,6 +38,10 @@ const AppRoutes = ({ isLoggedIn, setIsLoggedIn }) => {
       {/* <Route path="/matching-nurses" element={<MatchingNurses />} /> */}
       <Route path="/attempt/:id" element={<AttemptDetail />} />
       <Route path="/service-log" element={<ServiceLogForm />} />
+      <Route path="/contract-form" element={<ContractForm />} />
+      <Route path="/matching/create" element={<MatchingPage />} />
+      <Route path="/feedback/create" element={<FeedbackPage />} />{" "}
+      <Route path="/transaction" element={<TransactionPage />} />
     </Routes>
   );
 };
