@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import AppRoutes from "./routes"; // Gọi routes từ routes/index.js
+import AppRoutes from "./routes";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(
