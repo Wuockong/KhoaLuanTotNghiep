@@ -37,7 +37,13 @@ function Navbar() {
         {!isLoggedIn ? (
           <>
             <button onClick={() => navigate("/create-card")}>🎟️ Tạo QR</button>
-            <button onClick={() => navigate("/loginqr")}>🔑 Đăng nhập</button>
+            <button
+              onClick={() => {
+                localStorage.clear();
+                navigate("/loginqr");
+              }}>
+              🔑 Đăng nhập
+            </button>
           </>
         ) : (
           <>

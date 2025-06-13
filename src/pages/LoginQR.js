@@ -5,7 +5,9 @@ import "../assets/styles/pages/login-qr.css";
 import "../assets/styles/base/common.css";
 import "../assets/styles/base/buttons.css";
 import { login as loginApi } from "../services/authService";
+
 import { getMatching } from "../services/matchingService";
+import Swal from "sweetalert2";
 
 function LoginQR() {
   const webcamRef = useRef(null);
@@ -14,6 +16,10 @@ function LoginQR() {
   const [message, setMessage] = useState("");
   const [mode, setMode] = useState("camera");
   const [isDragging, setIsDragging] = useState(false);
+  useEffect(() => {
+    // Xóa thông tin đăng nhập mỗi lần vào trang này
+    localStorage.clear();
+  }, []);
 
   const handleLogin = async (card_id, role) => {
     try {
@@ -25,10 +31,23 @@ function LoginQR() {
       localStorage.setItem("role", role);
       localStorage.setItem("token", token);
 
-      setMessage("✅ Đăng nhập thành công!");
-      checkMatching(card_id);
+      Swal.fire({
+        icon: "success",
+        title: "Đăng nhập thành công!",
+        text: `Chào mừng bạn quay lại, vai trò: ${role}`,
+        confirmButtonText: "Tiếp tục",
+      }).then(() => {
+        checkMatching(card_id);
+      });
     } catch (err) {
-      setMessage("❌ Đăng nhập thất bại.");
+      Swal.fire({
+        icon: "error",
+        title: "Đăng nhập thất bại",
+        text:
+          err?.response?.data?.message ||
+          "Đã xảy ra lỗi khi đăng nhập. Vui lòng thử lại.",
+        confirmButtonText: "Đóng",
+      });
     }
   };
 
@@ -69,11 +88,24 @@ function LoginQR() {
                 localStorage.setItem("user_id", parsed.card_id);
                 localStorage.setItem("role", parsed.role);
                 localStorage.setItem("token", token);
-                setMessage("✅ Đăng nhập thành công!");
-                checkMatching(parsed.card_id);
+                Swal.fire({
+                  icon: "success",
+                  title: "Đăng nhập thành công!",
+                  text: `Chào mừng bạn quay lại, vai trò: ${parsed.role}`,
+                  confirmButtonText: "Tiếp tục",
+                }).then(() => {
+                  checkMatching(parsed.card_id);
+                });
               })
-              .catch(() => {
-                setMessage("❌ Đăng nhập thất bại.");
+              .catch((err) => {
+                Swal.fire({
+                  icon: "error",
+                  title: "Đăng nhập thất bại",
+                  text:
+                    err?.response?.data?.message ||
+                    "Đã xảy ra lỗi khi đăng nhập. Vui lòng thử lại.",
+                  confirmButtonText: "Đóng",
+                });
               });
           } else {
             setMessage("❌ QR không hợp lệ (thiếu thông tin)");
@@ -84,7 +116,6 @@ function LoginQR() {
       }
     }
   }, [cardId]);
-  
 
   useEffect(() => {
     if (mode === "camera") {
