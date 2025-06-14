@@ -1,0 +1,42 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #2c4ecf; /* Loyal blue */
+  padding: 1rem 2rem;
+  color: white;
+}
+
+.navbar-logo {
+  font-weight: bold;
+  font-size: 1.4rem;
+  color: white;
+  text-decoration: none;
+}
+
+.navbar-right .nav-link {
+  margin-left: 1.5rem;
+  color: white;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.navbar-right .nav-link:hover {
+  color: #ffffff;
+}
+
+.navbar-right .nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  left: 0;
+  bottom: -4px;
+  background: white;
+  transition: width 0.3s ease;
+}
+
+.navbar-right .nav-link:hover::after {
+  width: 100%;
+}
