@@ -1,0 +1,386 @@
+[
+  {
+    "_id": "nurses",
+    "public": {
+      "node_data": {
+        "jsonSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "title": "Nurse",
+          "description": "Schema for the nurses collection, containing detailed information about nurses.",
+          "type": "object",
+          "properties": {
+            "_id": {
+              "type": "string",
+              "description": "ID duy nhất của tài liệu do MongoDB tạo."
+            },
+            "user_id": {
+              "type": "string",
+              "description": "UUID duy nhất được tạo tự động để xác định người dùng."
+            },
+            "email": {
+              "type": "string",
+              "format": "email",
+              "description": "Email của y tá, dùng để xác minh tài khoản."
+            },
+            "card_id": {
+              "type": "string",
+              "description": "ID duy nhất của thẻ (có thể là QR code hoặc mã NFC)."
+            },
+            "hashed_student_id": {
+              "type": "string",
+              "description": "Băm ID sinh viên của y tá, liên kết với collection cards."
+            },
+            "public_key": {
+              "type": "string",
+              "description": "Khóa công khai để xác thực chữ ký số."
+            },
+            "private_key_encrypted": {
+              "type": "string",
+              "description": "Khóa riêng tư được mã hóa để bảo mật."
+            },
+            "qr_code_data": {
+              "type": "string",
+              "description": "Dữ liệu QR code chứa thông tin liên quan đến thẻ."
+            },
+            "gender": {
+              "type": "boolean",
+              "description": "Giới tính của y tá (true = male, false = female)."
+            },
+            "date_of_birth": {
+              "type": "string",
+              "format": "date",
+              "description": "Ngày sinh của y tá (định dạng YYYY-MM-DD)."
+            },
+            "university": {
+              "type": "string",
+              "description": "Tên trường đại học của y tá."
+            },
+            "faculty": {
+              "type": "string",
+              "description": "Khoa học tập của y tá."
+            },
+            "degree_level": {
+              "type": "string",
+              "description": "Cấp độ học vấn (ví dụ: Bachelor, Master, PhD)."
+            },
+            "enrollment_year": {
+              "type": "number",
+              "description": "Năm nhập học của y tá."
+            },
+            "avatar_url": {
+              "type": "string",
+              "nullable": true,
+              "description": "URL của ảnh đại diện đã băm."
+            },
+            "address": {
+              "type": "string",
+              "description": "Địa chỉ thường trú của y tá."
+            },
+            "service_level": {
+              "type": "string",
+              "enum": ["basic", "standard", "premium"],
+              "description": "Mức dịch vụ: basic (cơ bản), standard (tiêu chuẩn), premium (cao cấp)."
+            },
+            "experience_years": {
+              "type": "number",
+              "description": "Số năm kinh nghiệm chăm sóc."
+            },
+            "certifications": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Danh sách chứng chỉ (ví dụ: sơ cấp, điều dưỡng chính thức)."
+            },
+            "average_rating": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 5,
+              "description": "Đánh giá trung bình từ elderly."
+            },
+            "committed_hours_per_week": {
+              "type": "number",
+              "description": "Số giờ làm việc cam kết/tuần."
+            },
+            "special_skills": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Kỹ năng đặc biệt (ví dụ: vật lý trị liệu cơ bản, sơ cứu)."
+            },
+            "quality_supervision_frequency": {
+              "type": "string",
+              "enum": ["quarterly", "monthly", "weekly"],
+              "description": "Tần suất giám sát chất lượng: hàng quý, hàng tháng, hàng tuần."
+            },
+            "response_time_commitment": {
+              "type": "string",
+              "enum": ["24h", "12h", "4h"],
+              "description": "Cam kết phản hồi yêu cầu: trong 24h, 12h hoặc 4h."
+            },
+            "availability": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "start_time": { "type": "string", "format": "date-time" },
+                  "end_time": { "type": "string", "format": "date-time" }
+                }
+              },
+              "description": "Thời gian rảnh của nurse."
+            },
+            "isAvailableForMatching": {
+              "type": "boolean",
+              "default": true,
+              "description": "Trạng thái sẵn sàng matching."
+            },
+            "gpa": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 4.0,
+              "description": "Điểm tốt nghiệp chuyên môn y tế (GPA)."
+            },
+            "total_bookings": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Tổng số lượt được elderly booking."
+            },
+            "total_feedback_count": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Tổng số feedback từ elderly."
+            },
+
+            "ratio_feedbacks": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Tỷ lệ feedback tích cực so với tiêu cực (positive/negative)."
+            },
+            "specializations": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Các chuyên môn đặc biệt (ví dụ: Alzheimer care, Physical Therapy)."
+            },
+            "certificates": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Danh sách chứng chỉ liên quan (ví dụ: sơ cứu, CPR, chăm sóc đặc biệt)."
+            },
+            "updated_at": {
+              "$dateToString": {
+                "format": "%Y-%m-%dT%H:%M:%SZ",
+                "date": "$$NOW"
+              }
+            }
+          },
+          "required": [
+            "_id",
+            "user_id",
+            "email",
+            "email_verified",
+            "service_level",
+            "experience_years",
+            "certifications",
+            "average_rating",
+            "committed_hours_per_week",
+            "special_skills",
+            "quality_supervision_frequency",
+            "response_time_commitment",
+            "availability",
+            "isAvailableForMatching",
+            "updated_at"
+          ],
+          "additionalProperties": false
+        },
+        "jsonSample": [
+          {
+            "_id": "662b2f3d5f1e4c8a3a9d7e2c",
+            "user_id": "f1a1b82c-9a94-4e39-b021-02b9b12c6ef1",
+            "email": "nurse.jane@example.com",
+            "card_id": "CARD123456789",
+            "hashed_student_id": "b8c3a8c2f2d9b4f0d5c9f2e3b4d1e2f0",
+            "public_key": "04d2a8c5bfa1c3e1f9d4b8d1e7f5b2a4d3c8e5f6b2d9e7f1c8b2f4d1e3b9c5d7e3",
+            "private_key_encrypted": "ENCRYPTED_PRIVATE_KEY_STRING",
+            "qr_code_data": "nurse:662b2f3d5f1e4c8a3a9d7e2c",
+            "gender": false,
+            "date_of_birth": "1995-06-15",
+            "university": "Medical University of City",
+            "faculty": "Nursing Science",
+            "degree_level": "Bachelor",
+            "enrollment_year": 2014,
+            "avatar_url": "https://cdn.example.com/avatar/hashedavatar123.png",
+            "address": "123 Main St, District 1, Ho Chi Minh City, Vietnam",
+            "service_level": "premium",
+            "experience_years": 5,
+            "certifications": [
+              "Registered Nurse Certification",
+              "First Aid",
+              "Advanced Cardiac Life Support"
+            ],
+            "average_rating": 4.7,
+            "committed_hours_per_week": 40,
+            "special_skills": [
+              "Basic Physical Therapy",
+              "Emergency Response",
+              "Alzheimer Care"
+            ],
+            "quality_supervision_frequency": "monthly",
+            "response_time_commitment": "12h",
+            "availability": [
+              {
+                "start_time": "2025-04-27T08:00:00Z",
+                "end_time": "2025-04-27T18:00:00Z"
+              },
+              {
+                "start_time": "2025-04-28T08:00:00Z",
+                "end_time": "2025-04-28T18:00:00Z"
+              }
+            ],
+            "isAvailableForMatching": true,
+            "gpa": 3.8,
+            "total_bookings": 120,
+            "total_feedback_count": 110,
+            "ratio_feedbacks": 4.5,
+            "specializations": [
+              "Alzheimer Care",
+              "Physical Therapy",
+              "Palliative Care"
+            ],
+            "certificates": [
+              "CPR Certification",
+              "Wound Care Certification",
+              "Elderly Care Certification"
+            ],
+            "updated_at": "2025-04-26T17:00:00Z"
+          }
+        ]
+      }
+    },
+
+    "personal": {
+      "node_info": {
+        "name": "PhucHwa System",
+        "author": "LOC",
+        "version": "2.2",
+        "year": "2025"
+      }
+    }
+  },
+
+  {
+    "_id": "elderies",
+    "public": {
+      "node_data": {
+        "jsonSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "title": "Elderly",
+          "description": "Schema for the elderlies collection, containing detailed information about elderly users.",
+          "type": "object",
+          "properties": {
+            "_id": {
+              "type": "string",
+              "description": "ID duy nhất của tài liệu do MongoDB tạo."
+            },
+            "user_id": {
+              "type": "string",
+              "description": "UUID duy nhất được tạo tự động để xác định người dùng."
+            },
+            "email": {
+              "type": "string",
+              "format": "email",
+              "description": "Email của người cao tuổi, dùng để xác minh tài khoản."
+            },
+            "email_verified": {
+              "type": "boolean",
+              "default": false,
+              "description": "Trạng thái xác minh email. Phải là true để hoàn tất đăng ký."
+            },
+            "hashed_password": {
+              "type": "string",
+              "nullable": true,
+              "description": "Băm mật khẩu của người cao tuổi bằng thuật toán bcrypt."
+            },
+
+            "full_name": {
+              "type": "string",
+              "nullable": true,
+              "description": "Họ và tên đầy đủ của người cao tuổi."
+            },
+            "gender": {
+              "type": "boolean",
+              "nullable": true,
+              "description": "Giới tính của người cao tuổi (true = male, false = female)."
+            },
+            "date_of_birth": {
+              "type": "string",
+              "format": "date",
+              "nullable": true,
+              "description": "Ngày sinh của người cao tuổi (định dạng YYYY-MM-DD)."
+            },
+            "permanent_address": {
+              "type": "object",
+              "nullable": true,
+              "description": "Địa chỉ hộ khẩu thường trú.",
+              "properties": {
+                "street": { "type": "string", "nullable": true },
+                "city": { "type": "string", "nullable": true },
+                "country": { "type": "string", "nullable": true }
+              }
+            },
+            "current_address": {
+              "type": "object",
+              "nullable": true,
+              "description": "Địa chỉ hiện tại đang sinh sống.",
+              "properties": {
+                "street": { "type": "string", "nullable": true },
+                "city": { "type": "string", "nullable": true },
+                "country": { "type": "string", "nullable": true }
+              }
+            },
+            "insurance_number": {
+              "type": "string",
+              "nullable": true,
+              "description": "Mã số bảo hiểm xã hội/y tế."
+            },
+            "phone_number": {
+              "type": "string",
+              "nullable": true,
+              "description": "Số điện thoại liên hệ."
+            },
+            "avatar_url": {
+              "type": "string",
+              "nullable": true,
+              "description": "URL của ảnh đại diện đã băm."
+            },
+            "updated_at": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true,
+              "description": "Ngày cập nhật hồ sơ gần nhất (ISO 8601)."
+            }
+          },
+          "required": ["_id", "user_id", "email", "email_verified"],
+          "additionalProperties": false
+        },
+        "jsonSample": [
+          {
+            "_id": "6630fac2b9e1f2b7c3a1d9e4",
+            "user_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+            "email": "elder.ly@example.com",
+            "email_verified": true,
+            "hashed_password": "ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f",
+            "public_key": "0xdef...uvw",
+            "private_key_encrypted": "encrypted_private_key_456",
+            "qr_code_data": "{\"card_id\":\"QR987654\",\"user_id\":\"user_002\",\"public_key\":\"0xdef...uvw\"}"
+          }
+        ]
+      }
+    },
+
+    "personal": {
+      "node_info": {
+        "name": "PhucHwa System",
+        "author": "LOC",
+        "version": "2.2",
+        "year": "2025"
+      }
+    }
+  }
+]

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import AppRoutes from "./routes";
+import { AuthProvider } from "./contexts/AuthContext"; // ✅ import
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(
@@ -20,8 +21,12 @@ function App() {
 
   return (
     <Router>
-      <Navbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
-      <AppRoutes isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+      {" "}
+      <AuthProvider>
+        {" "}
+        <Navbar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+        <AppRoutes isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+      </AuthProvider>
     </Router>
   );
 }
