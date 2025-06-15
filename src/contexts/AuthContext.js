@@ -10,8 +10,10 @@ export const AuthProvider = ({ children }) => {
     setUser(userData); // userData phải chứa role: 'elderly' hoặc 'nurse'
   };
 
-  const logout = () => setUser(null);
-
+  const logout = () => {
+  localStorage.clear();
+  setUser(null);
+};
   return (
     <AuthContext.Provider value={{ user, login, logout }}>
       {children}

@@ -35,29 +35,53 @@ function Login() {
   //   }
   // };
   const handleLogin = () => {
-    const foundUser = mockUsers.find(
-      (u) => u.email === email && u.hashed_password === password
-    );
+  const foundUser = mockUsers.find(
+    (u) => u.email === email && u.hashed_password === password
+  );
 
-    if (!foundUser) {
-      setMessage("❌ Sai email hoặc mật khẩu");
-      return;
-    }
+  if (!foundUser) {
+    setMessage("❌ Sai email hoặc mật khẩu");
+    return;
+  }
 
-    if (!foundUser.email_verified) {
-      setMessage("❌ Email chưa được xác minh.");
-      return;
-    }
+  if (!foundUser.email_verified) {
+    setMessage("❌ Email chưa được xác minh.");
+    return;
+  }
 
-    // Giả lập token
-    const fakeToken = "token_" + foundUser.user_id;
+  const fakeToken = "token_" + foundUser.user_id;
 
-    setMessage("✅ Đăng nhập thành công!");
-    localStorage.setItem("token", fakeToken);
-    localStorage.setItem("user_id", foundUser.user_id);
-    login(foundUser); // Gửi toàn bộ user vào context
-    navigate("/dashboard");
-  };
+  // ✅ Lưu vào localStorage
+  localStorage.setItem("token", fakeToken);
+  localStorage.setItem("user_id", foundUser.user_id);
+  localStorage.setItem("role", foundUser.role);
+  if (foundUser.card_id) {
+    localStorage.setItem("card_id", foundUser.card_id);
+  }
+  if (foundUser.role !== 'nurse') {
+    localStorage.removeItem("card_id");
+  }
+
+  // ✅ Gửi vào context
+  login({
+    user_id: foundUser.user_id,
+    role: foundUser.role,
+    card_id: foundUser.card_id || null,
+  });
+
+  setMessage("✅ Đăng nhập thành công!");
+
+  // ✅ Log toàn bộ localStorage liên quan
+  console.log("🔐 LocalStorage sau đăng nhập:");
+  console.log("token:", localStorage.getItem("token"));
+  console.log("user_id:", localStorage.getItem("user_id"));
+  console.log("role:", localStorage.getItem("role"));
+  console.log("card_id:", localStorage.getItem("card_id")); // Có thể null
+
+  // Điều hướng
+  navigate("/dashboard");
+};
+
 
   return (
     <div className="container">
@@ -74,6 +98,10 @@ function Login() {
           onChange={(e) => setPassword(e.target.value)}
         />
         <button onClick={handleLogin}>Đăng nhập</button>
+        <div style={{ marginTop: '1rem' }}>
+          <p>Bạn là y tá?</p>
+          <button onClick={() => navigate('/loginqr')}>Đăng nhập cho y tá</button>
+        </div>
         {message && <p>{message}</p>}
       </div>
     </div>

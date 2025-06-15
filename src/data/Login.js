@@ -14,6 +14,7 @@ const mockUsers = [
     email_verified: true,
     hashed_password: "abc123",
     student_id: "sv001",
+    card_id: "CARD-001",
   },
 ];
 
