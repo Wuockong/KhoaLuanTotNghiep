@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import mockUsers from "../data/Login"; // Giả lập dữ liệu người dùng
-function Login() {
+function LoginElderly() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -108,4 +108,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default LoginElderly;

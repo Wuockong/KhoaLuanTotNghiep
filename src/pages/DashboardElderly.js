@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function Dashboard() {
+function DashboardElderly() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -21,4 +21,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default DashboardElderly;

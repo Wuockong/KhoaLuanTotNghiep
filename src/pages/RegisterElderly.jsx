@@ -4,7 +4,7 @@
 // import { useNavigate } from "react-router-dom";
 // import { useAuth } from "../contexts/AuthContext";
 
-// function Register() {
+// function RegisterElderly() {
 //   const [email, setEmail] = useState("");
 //   const [otp, setOtp] = useState("");
 //   const [password, setPassword] = useState("");
@@ -108,4 +108,4 @@
 //   );
 // }
 
-// export default Register;
+// export default RegisterElderly;

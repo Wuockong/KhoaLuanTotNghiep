@@ -1,9 +1,9 @@
-// src/pages/Account_elderly.js
+// src/pages/AccountElderly.js
 import React, { useEffect, useState } from 'react';
 import axiosClient from '../services/axiosClient';
 import '../assets/styles/base/common.css';
 
-function Account() {
+function AccountElderly() {
   const [accountInfo, setAccountInfo] = useState(null);
   const [error, setError] = useState('');
 
@@ -47,4 +47,4 @@ function Account() {
   );
 }
 
-export default Account;
+export default AccountElderly;
