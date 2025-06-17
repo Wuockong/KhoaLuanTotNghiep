@@ -5,8 +5,8 @@ import { useAuth } from "../contexts/AuthContext";
 
 import Dashboard from "../pages/Dashboard";
 import LoginQR from "../pages/LoginQR";
-import Login_elderly from "../pages/Login_elderly";
-import Register_elderly from "../pages/Register_elderly";
+import LoginElderly from "../pages/LoginElderly";
+import RegisterElderly from "../pages/RegisterElderly";
 import CreateCard from "../pages/CreateCard";
 import TestFormNurses from "../pages/TestFormNurses";
 import MatchingNurses from "../pages/MatchingNurses";
@@ -25,8 +25,8 @@ const AppRoutes = () => {
   if (!user) {
     return (
       <Routes>
-        <Route path="/login-elderly" element={<Login_elderly />} />
-        <Route path="/register-elderly" element={<Register_elderly />} />
+        <Route path="/login-elderly" element={<LoginElderly />} />
+        <Route path="/register-elderly" element={<RegisterElderly />} />
         <Route path="/loginqr" element={<LoginQR />} />
         <Route path="/register-nurse" element={<CreateCard />} />
         <Route path="/" element={<Navigate to="/login-elderly" />} />
