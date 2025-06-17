@@ -1,35 +1,16 @@
-import React, { useEffect, useState } from "react";
+// src/components/Navbar.js
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../assets/styles/components/navbar.css";
 import { useAuth } from "../contexts/AuthContext";
 
 function Navbar() {
   const navigate = useNavigate();
-  // const [role, setRole] = useState("");
   const { user, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
-  // const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // useEffect(() => {
-  //   const token = localStorage.getItem("token");
-  //   const r = localStorage.getItem("role");
-  //   if (token) {
-  //     setIsLoggedIn(true);
-  //     setRole(r);
-  //   } else {
-  //     setIsLoggedIn(false);
-  //     setRole("");
-  //   }
-  // }, []);
-
-  // const handleLogout = () => {
-  //   localStorage.clear();
-  //   setIsLoggedIn(false);
-  //   setMenuOpen(false);
-  //   navigate("/");
-  // };
   const handleLogout = () => {
-    logout(); 
+    logout();
     setMenuOpen(false);
     navigate("/");
   };
@@ -43,7 +24,7 @@ function Navbar() {
       <div className="navbar-right">
         {!user ? (
           <>
-            <button onClick={() => navigate("/create-card")}>🎟️ Tạo QR</button>
+            <button onClick={() => navigate("/register-nurse")}>🎟️ Tạo QR</button>
             <button onClick={() => navigate("/loginqr")}>🔑 Đăng nhập</button>
           </>
         ) : (
@@ -59,10 +40,8 @@ function Navbar() {
                   className="menu-overlay"
                   onClick={() => setMenuOpen(false)}
                 />
-                <div className="dropdown-menu">
-                  <a href="/dashboard">🏠 Trang chủ</a>
-
-                  {/* 👩‍⚕️ Nếu là y tá */}
+                <div className="menu-dropdown">
+                  {/* 🧑 Y tá */}
                   {user.role === "nurse" && (
                     <>
                       <a href="/testform-nurses">📝 Làm bài kiểm tra</a>
@@ -73,7 +52,7 @@ function Navbar() {
                     </>
                   )}
 
-                  {/* 🧓 Nếu là elderly */}
+                  {/* 🧓 Người cao tuổi */}
                   {user.role === "elderly" && (
                     <>
                       <a href="/dashboard">📋 Hồ sơ</a>

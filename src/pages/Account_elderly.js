@@ -1,6 +1,7 @@
+// src/pages/Account_elderly.js
 import React, { useEffect, useState } from 'react';
-import api from '../api'; // ✅ Đúng instance có baseURL
-import '../styles/base/common.css';
+import axiosClient from '../services/axiosClient';
+import '../assets/styles/base/common.css';
 
 function Account() {
   const [accountInfo, setAccountInfo] = useState(null);
@@ -15,7 +16,7 @@ function Account() {
           return;
         }
 
-        const res = await api.get('/users/account', {
+        const res = await axiosClient.get('/users/account', {
           headers: {
             Authorization: `Bearer ${token}`
           }

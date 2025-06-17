@@ -1,23 +1,39 @@
-import React, { useState } from "react";
+// src/pages/FeedbackPage.js
+import React, { useState, useEffect } from "react";
 import "../assets/styles/base/buttons.css";
 import "../assets/styles/base/common.css";
 import { reportViolation, completeMatching } from "../services/matchingService";
 
-function FeedbackPage({ matchId }) {
+function FeedbackPage() {
   const [feedback, setFeedback] = useState("");
+  const [matchId, setMatchId] = useState(null);
+
+  useEffect(() => {
+    // Lấy matchId từ localStorage hoặc query param nếu có
+    const stored = localStorage.getItem("matchId");
+    if (stored) setMatchId(stored);
+  }, []);
 
   const handleReportViolation = async (e) => {
     e.preventDefault();
+    if (!matchId) {
+      alert("Chưa có mã matching.");
+      return;
+    }
     try {
       await reportViolation(matchId, { feedback });
       alert("✅ Đã gửi báo cáo vi phạm");
-      setFeedback(""); // reset form
+      setFeedback("");
     } catch (err) {
       alert("❌ Không thể gửi báo cáo: " + err.message);
     }
   };
 
   const handleCompleteMatching = async () => {
+    if (!matchId) {
+      alert("Chưa có mã matching.");
+      return;
+    }
     try {
       await completeMatching(matchId);
       alert("✅ Đã đánh dấu hoàn thành matching");
@@ -30,7 +46,6 @@ function FeedbackPage({ matchId }) {
     <div style={{ maxWidth: "600px", margin: "0 auto", padding: "1rem" }}>
       <h2>📝 Feedback về quá trình chăm sóc</h2>
 
-      {/* Form gửi feedback */}
       <form onSubmit={handleReportViolation} className="feedback-form-wrapper">
         <div style={{ marginBottom: "0.5rem" }}>
           <label>Nhập nội dung feedback:</label>
@@ -48,7 +63,6 @@ function FeedbackPage({ matchId }) {
         </button>
       </form>
 
-      {/* Nút đánh dấu hoàn thành */}
       <div style={{ marginTop: "1rem" }}>
         <button onClick={handleCompleteMatching} className="submit-btn">
           Đánh dấu hoàn thành matching

@@ -1,16 +1,9 @@
-// routes/index.js
+// src/routes/index.js
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
-// Common pages
-// import Login from "../pages/Login";
-// import Register from "../pages/Register";
-// import ProfileForm from "../pages/ProfileForm";
 import Dashboard from "../pages/Dashboard";
-// import Account from "../pages/Account";
-
-// Admin/Nurse pages
 import LoginQR from "../pages/LoginQR";
 import Login_elderly from "../pages/Login_elderly";
 import Register_elderly from "../pages/Register_elderly";
@@ -32,28 +25,20 @@ const AppRoutes = () => {
   if (!user) {
     return (
       <Routes>
-        {/* Đăng nhập / Đăng ký Elderly */}
         <Route path="/login-elderly" element={<Login_elderly />} />
         <Route path="/register-elderly" element={<Register_elderly />} />
-
-        {/* Đăng nhập / Đăng ký Nurse */}
         <Route path="/loginqr" element={<LoginQR />} />
         <Route path="/register-nurse" element={<CreateCard />} />
-
-        {/* Redirect mặc định */}
         <Route path="/" element={<Navigate to="/login-elderly" />} />
         <Route path="*" element={<Navigate to="/login-elderly" />} />
       </Routes>
     );
   }
-  
 
   if (user.role === "elderly") {
     return (
       <Routes>
-        {/* <Route path="/profile" element={<ProfileForm />} /> */}
         <Route path="/dashboard" element={<Dashboard />} />
-        {/* <Route path="/account" element={<Account />} /> */}
         <Route
           path="/"
           element={
@@ -62,7 +47,7 @@ const AppRoutes = () => {
             </div>
           }
         />
-        <Route path="*" element={<Navigate to="/" />} />
+        <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>
     );
   }
@@ -87,8 +72,8 @@ const AppRoutes = () => {
     );
   }
 
-  // fallback
-  return <Navigate to="/login" />;
+  // Fallback: nếu user có role lạ, chuyển về login-elderly
+  return <Navigate to="/login-elderly" />;
 };
 
 export default AppRoutes;
