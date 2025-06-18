@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import Webcam from "react-webcam";
 import jsQR from "jsqr";
@@ -16,6 +17,7 @@ function LoginQR() {
   const [message, setMessage] = useState("");
   const [mode, setMode] = useState("camera");
   const [isDragging, setIsDragging] = useState(false);
+  const navigate = useNavigate();
   useEffect(() => {
     // Xóa thông tin đăng nhập mỗi lần vào trang này
     localStorage.clear();
@@ -234,6 +236,12 @@ function LoginQR() {
             {message}
           </p>
         )}
+        <div style={{ marginTop: "1rem", textAlign: "center" }}>
+          <p>Bạn là người dùng thông thường?</p>
+          <button onClick={() => navigate("/login-elderly")}>
+            Đăng nhập bằng Email
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -18,6 +18,7 @@ import FeedbackPage from "../pages/FeedbackPage";
 import TransactionPage from "../pages/TransactionPage";
 import PricePage from "../pages/PricePage";
 import WithdrawPage from "../pages/WithdrawPage";
+import ProfileFormElderly from "../pages/ProfileFormElderly";
 
 const AppRoutes = () => {
   const { user } = useAuth();
@@ -27,6 +28,7 @@ const AppRoutes = () => {
       <Routes>
         <Route path="/login-elderly" element={<LoginElderly />} />
         <Route path="/register-elderly" element={<RegisterElderly />} />
+        <Route path="/profile-elderly" element={<ProfileFormElderly />} />
         <Route path="/loginqr" element={<LoginQR />} />
         <Route path="/register-nurse" element={<CreateCard />} />
         <Route path="/" element={<Navigate to="/login-elderly" />} />

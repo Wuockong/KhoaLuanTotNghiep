@@ -1,108 +1,104 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import "../assets/styles/pages/register-elderly.css";
+import React, { useState } from 'react';
+import api from '../services/apiClient';
+import { useNavigate } from 'react-router-dom';
+import bcrypt from 'bcryptjs';
 
 function RegisterElderly() {
-  const [formData, setFormData] = useState({
-    full_name: "",
-    card_id: "",
-    password: "",
-    date_of_birth: "",
-    phone_number: "",
-    current_address: "",
-  });
-  const [message, setMessage] = useState("");
+  const [step, setStep] = useState(1); // Step 1: Email | Step 2: OTP | Step 3: Password | Step 4: Register/ProfileForm
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState(null);
+  const [otp, setOtp] = useState('');
+  const [userId, setUserId] = useState('');
+  const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const sendOTP = async () => {
     try {
-      const res = await axios.post("https://phuchwa-project.onrender.com/api/users/register", {
-        ...formData,
-        role: "elderly",
-      });
-
-      setMessage("✅ Đăng ký thành công!");
-      setTimeout(() => {
-        navigate("/login-elderly");
-      }, 1000);
+      await api.post('/users/send-verify-email', { email });
+      setMessage('✅ OTP đã được gửi đến email!');
+      setStep(2);
     } catch (err) {
-      setMessage("❌ Đăng ký thất bại. " + err.response?.data?.message || err.message);
+      setMessage('❌ Gửi OTP thất bại: ' + (err.response?.data?.error || 'Lỗi server'));
     }
   };
+
+  const verifyOTP = async () => {
+    try {
+      await api.post('/users/verify-account', { email, otp });
+      setMessage('✅ Xác thực OTP thành công!');
+      setStep(3);
+    } catch (err) {
+      setMessage('❌ OTP không đúng hoặc hết hạn');
+    }
+  };
+
+  const registerUser = async () => {
+    try {
+      const hashed_password = await bcrypt.hash(password, 10);
+      const res = await api.post('/users/register', {
+        email,
+        password: hashed_password,
+        role: 'elderly'
+      });
+      setUserId(res.data.user.user_id);
+      setMessage('✅ Đăng ký thành công, mời bạn hoàn tất hồ sơ.');
+      localStorage.setItem('user_id', res.data.user.user_id);
+      setStep(4);
+    } catch (err) {
+      setMessage('❌ Đăng ký thất bại: ' + (err.response?.data?.error || 'Lỗi server'));
+    }
+  };
+
+  if (step === 4) {
+    navigate('/profile');
+    return null;
+  }
 
   return (
     <div className="container">
       <div className="card-box">
-        <h2>📝 Đăng ký người cao tuổi</h2>
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            name="full_name"
-            placeholder="Họ và tên"
-            value={formData.full_name}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="text"
-            name="card_id"
-            placeholder="Mã thẻ"
-            value={formData.card_id}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Mật khẩu"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="date"
-            name="date_of_birth"
-            placeholder="Ngày sinh"
-            value={formData.date_of_birth}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="text"
-            name="phone_number"
-            placeholder="Số điện thoại"
-            value={formData.phone_number}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="text"
-            name="current_address"
-            placeholder="Địa chỉ hiện tại"
-            value={formData.current_address}
-            onChange={handleChange}
-            required
-          />
-          <button type="submit">Đăng ký</button>
-        </form>
-        {message && (
-          <p style={{ color: message.includes("✅") ? "green" : "red" }}>
-            {message}
-          </p>
+        <h2>Đăng ký Người Dùng (Elderly)</h2>
+
+        {step === 1 && (
+          <>
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <button onClick={sendOTP}>Gửi OTP xác thực email</button>
+          </>
         )}
-        <div>
-          <p>Đã có tài khoản?</p>
-          <button onClick={() => navigate("/login-elderly")}>Đăng nhập</button>
-        </div>
+
+        {step === 2 && (
+          <>
+            <input
+              type="text"
+              placeholder="Nhập mã OTP"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              required
+            />
+            <button onClick={verifyOTP}>Xác thực OTP</button>
+          </>
+        )}
+
+        {step === 3 && (
+          <>
+            <input
+              type="password"
+              placeholder="Tạo mật khẩu"
+              value={password || ''}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <button onClick={registerUser}>Hoàn tất đăng ký</button>
+          </>
+        )}
+
+        {message && <p>{message}</p>}
       </div>
     </div>
   );
