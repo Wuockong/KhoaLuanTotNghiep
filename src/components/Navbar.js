@@ -1,4 +1,3 @@
-// src/components/Navbar.js
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "../assets/styles/components/navbar.css";
@@ -18,7 +17,7 @@ function Navbar() {
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const isLoginElderly = location.pathname === "/login-elderly";
-  const isRegisterElderly = location.pathname === "/login-elderly";
+  const isRegisterElderly = location.pathname === "/register-elderly";
 
   return (
     <header className="navbar-full">
@@ -36,6 +35,7 @@ function Navbar() {
             <button className="account-button" onClick={toggleMenu}>Tài khoản</button>
             {menuOpen && (
               <div className="account-menu">
+                <button onClick={() => navigate("/account-elderly")}>👤 Thông tin tài khoản</button>
                 <button onClick={handleLogout}>🚪 Đăng xuất</button>
               </div>
             )}

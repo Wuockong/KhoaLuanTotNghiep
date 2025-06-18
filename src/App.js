@@ -13,6 +13,8 @@ import TransactionPage from "./pages/transactions/TransactionPage";
 import ServiceLogForm from "./pages/ServiceLogForm";
 import FeedbackPage from "./pages/FeedbackPage";
 import AttemptDetail from "./pages/AttemptDetail";
+import ProfileFormElderly from "./pages/ProfileFormElderly";
+import AccountElderly from "./pages/AccountElderly";
 
 function App() {
   const token = localStorage.getItem("token");
@@ -30,9 +32,11 @@ function App() {
         <Route path="/register-elderly" element={<RegisterElderly />} />
         <Route path="/login-nurse" element={<LoginQR />} />
         <Route path="/register-nurse" element={<CreateCard />} />
+        <Route path="/profile-elderly" element={<ProfileFormElderly />} />
 
         {/* Trang chính */}
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/account-elderly" element={<AccountElderly />} />
 
         {/* Chức năng dành cho nurse */}
         {role === "nurse" && (
