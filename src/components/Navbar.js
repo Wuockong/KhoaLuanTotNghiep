@@ -18,16 +18,17 @@ function Navbar() {
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const isLoginElderly = location.pathname === "/login-elderly";
+  const isRegisterElderly = location.pathname === "/login-elderly";
 
   return (
     <header className="navbar-full">
       <div className="logo">🌸 PhucHwa</div>
 
       <div className="navbar-right">
-        {!user && !isLoginElderly ? (
+        {!user && !isLoginElderly && !isRegisterElderly ? (
           <>
             <button onClick={() => navigate("/register-nurse")}>🎟️ Tạo QR</button>
-            <button onClick={() => navigate("/loginqr")}>🔑 Đăng nhập</button>
+            <button onClick={() => navigate("/login-nurse")}>🔑 Đăng nhập</button>
           </>
         ) : user && (
           <>

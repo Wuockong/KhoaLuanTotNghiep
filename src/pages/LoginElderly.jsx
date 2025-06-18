@@ -68,7 +68,7 @@ function LoginElderly() {
 
       <div className="elderly-auth-footer">
           <p>Bạn là y tá?</p>
-          <button onClick={() => navigate("/loginqr")}>Đăng nhập cho y tá</button>
+          <button onClick={() => navigate("/login-nurse")}>Đăng nhập cho y tá</button>
         </div>
 
     </div>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import api from '../services/apiClient';
 import { useNavigate } from 'react-router-dom';
 import bcrypt from 'bcryptjs';
+import "../assets/styles/pages/register-elderly.css";
 
 function RegisterElderly() {
   const [step, setStep] = useState(1); // Step 1: Email | Step 2: OTP | Step 3: Password | Step 4: Register/ProfileForm
@@ -98,7 +99,19 @@ function RegisterElderly() {
           </>
         )}
 
-        {message && <p>{message}</p>}
+        {message && (
+          <p style={{ color: message.includes("✅") ? "green" : "red" }}>
+            {message}
+          </p>
+        )}
+
+        <button
+          className="back-btn"
+          onClick={() => (window.location.href = "/login-elderly")}
+        >
+          ← Quay lại đăng nhập
+        </button>
+
       </div>
     </div>
   );
