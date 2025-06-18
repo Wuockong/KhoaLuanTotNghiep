@@ -1,19 +1,8 @@
-// import React from "react";
-// import ContractFormWrapper from "../components/contract-form/ContractFormWrapper";
-
-// export default function ContractFormPage() {
-//   return (
-//     <div style={{ maxWidth: 600, margin: "auto", padding: "1rem" }}>
-//       <h2>📝 Tạo Hợp Đồng Chăm Sóc</h2>
-//       <ContractFormWrapper />
-//     </div>
-//   );
-// }
 // ElderlyPageSwitcher.jsx
 import React, { useState } from "react";
 import ThemeToggle from "../components/ui/ThemeToggle";
-import ContractFormWrapper from "../components/contract-form/ContractFormWrapper";
-import ContractForm from "../components/contract-form/ContractForm";
+import AccountElderly from "./Elderly/AccountElderly";
+import ElderlyRJFS from "./Elderly/ElderlyRJFS";
 
 const ElderlyPageSwitcher = () => {
   const [showRJFS, setShowRJFS] = useState(false);
@@ -39,7 +28,7 @@ const ElderlyPageSwitcher = () => {
       </div>
 
       <div style={{ padding: "1rem" }}>
-        {showRJFS ? <ContractFormWrapper /> : <ContractForm />}
+        {showRJFS ? <ElderlyRJFS /> : <AccountElderly />}
       </div>
     </div>
   );

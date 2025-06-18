@@ -1,79 +1,43 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import "../assets/styles/components/navbar.css";
+import { useAuth } from "../contexts/AuthContext";
 
 function Navbar() {
   const navigate = useNavigate();
-  const [role, setRole] = useState("");
+  const location = useLocation();
+  const { user, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const r = localStorage.getItem("role");
-    if (token) {
-      setIsLoggedIn(true);
-      setRole(r);
-    } else {
-      setIsLoggedIn(false);
-      setRole("");
-    }
-  }, []);
 
   const handleLogout = () => {
-    localStorage.clear();
-    setIsLoggedIn(false);
+    logout();
     setMenuOpen(false);
     navigate("/");
   };
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
+  const isLoginElderly = location.pathname === "/login-elderly";
+  const isRegisterElderly = location.pathname === "/register-elderly";
 
   return (
     <header className="navbar-full">
       <div className="logo">🌸 PhucHwa</div>
 
       <div className="navbar-right">
-        {!isLoggedIn ? (
+        {!user && !isLoginElderly && !isRegisterElderly ? (
           <>
-            <button onClick={() => navigate("/create-card")}>🎟️ Tạo QR</button>
-            <button onClick={() => navigate("/loginqr")}>🔑 Đăng nhập</button>
+            <button onClick={() => navigate("/register-nurse")}>🎟️ Tạo QR</button>
+            <button onClick={() => navigate("/login-nurse")}>🔑 Đăng nhập</button>
           </>
-        ) : (
+        ) : user && (
           <>
             <div className="bell">🔔</div>
-            <button className="account-button" onClick={toggleMenu}>
-              Tài khoản
-            </button>
-
+            <button className="account-button" onClick={toggleMenu}>Tài khoản</button>
             {menuOpen && (
-              <>
-                <div
-                  className="menu-overlay"
-                  onClick={() => setMenuOpen(false)}
-                />
-                <div className="dropdown-menu">
-                  <a href="/dashboard">🏠 Trang chủ</a>
-
-                  {role === "nurses" && (
-                    <>
-                      <a href="/testform-nurses">📝 Làm bài kiểm tra</a>
-                      <a href="/matching-nurses">🔗 Kết nối bệnh nhân</a>
-                      <a href="/transaction">💳 Quản lý hợp đồng</a>
-                      <a href="/feedback">📩 Gửi phản hồi</a>
-                      <a href="/service-log">📋 Nhật ký chăm sóc</a>
-                    </>
-                  )}
-
-                  {role === "mentor" && (
-                    <>
-                      <a href="/manage-tests">📋 Quản lý đề kiểm tra</a>
-                    </>
-                  )}
-
-                  <button onClick={handleLogout}>🚪 Đăng xuất</button>
-                </div>
-              </>
+              <div className="account-menu">
+                <button onClick={() => navigate("/account-elderly")}>👤 Thông tin tài khoản</button>
+                <button onClick={handleLogout}>🚪 Đăng xuất</button>
+              </div>
             )}
           </>
         )}

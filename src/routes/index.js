@@ -1,8 +1,13 @@
+// src/routes/index.js
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import CreateCard from "../pages/CreateCard";
-import LoginQR from "../pages/LoginQR";
+import { useAuth } from "../contexts/AuthContext";
+
 import Dashboard from "../pages/Dashboard";
+import LoginQR from "../pages/LoginQR";
+import LoginElderly from "../pages/LoginElderly";
+import RegisterElderly from "../pages/RegisterElderly";
+import CreateCard from "../pages/CreateCard";
 import TestFormNurses from "../pages/TestFormNurses";
 import MatchingNurses from "../pages/MatchingNurses";
 import AttemptDetail from "../pages/AttemptDetail";
@@ -11,71 +16,66 @@ import ContractForm from "../pages/ContractForm";
 import MatchingPage from "../pages/MatchingPage";
 import FeedbackPage from "../pages/FeedbackPage";
 import TransactionPage from "../pages/TransactionPage";
+import PricePage from "../pages/PricePage";
+import WithdrawPage from "../pages/WithdrawPage";
+import ProfileFormElderly from "../pages/ProfileFormElderly";
 
-const AppRoutes = ({ isLoggedIn, setIsLoggedIn }) => {
-  return (
-    <Routes>
-      {/* Trang đăng nhập mặc định */}
-      <Route
-        path="/"
-        element={
-          isLoggedIn ? (
-            <Navigate to="/dashboard" />
-          ) : (
-            <LoginQR setIsLoggedIn={setIsLoggedIn} />
-          )
-        }
-      />
+const AppRoutes = () => {
+  const { user } = useAuth();
 
-      {/* Tạo QR */}
-      <Route
-        path="/create-card"
-        element={isLoggedIn ? <Navigate to="/dashboard" /> : <CreateCard />}
-      />
+  if (!user) {
+    return (
+      <Routes>
+        <Route path="/login-elderly" element={<LoginElderly />} />
+        <Route path="/register-elderly" element={<RegisterElderly />} />
+        <Route path="/profile-elderly" element={<ProfileFormElderly />} />
+        <Route path="/loginqr" element={<LoginQR />} />
+        <Route path="/register-nurse" element={<CreateCard />} />
+        <Route path="/" element={<Navigate to="/login-elderly" />} />
+        <Route path="*" element={<Navigate to="/login-elderly" />} />
+      </Routes>
+    );
+  }
 
-      {/* Trang dashboard sau khi login */}
-      <Route
-        path="/dashboard"
-        element={isLoggedIn ? <Dashboard /> : <Navigate to="/" />}
-      />
+  if (user.role === "elderly") {
+    return (
+      <Routes>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route
+          path="/"
+          element={
+            <div className="container">
+              <h2>Trang chủ Elderly</h2>
+            </div>
+          }
+        />
+        <Route path="*" element={<Navigate to="/dashboard" />} />
+      </Routes>
+    );
+  }
 
-      {/* Các trang chức năng cần login */}
-      <Route
-        path="/testform-nurses"
-        element={isLoggedIn ? <TestFormNurses /> : <Navigate to="/" />}
-      />
-      <Route
-        path="/matching-nurses"
-        element={isLoggedIn ? <MatchingNurses /> : <Navigate to="/" />}
-      />
-      <Route
-        path="/transaction"
-        element={isLoggedIn ? <TransactionPage /> : <Navigate to="/" />}
-      />
-      <Route
-        path="/feedback"
-        element={isLoggedIn ? <FeedbackPage /> : <Navigate to="/" />}
-      />
-      <Route
-        path="/service-log"
-        element={isLoggedIn ? <ServiceLogForm /> : <Navigate to="/" />}
-      />
+  if (user.role === "nurse") {
+    return (
+      <Routes>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/create-card" element={<CreateCard />} />
+        <Route path="/testform-nurses" element={<TestFormNurses />} />
+        <Route path="/matching-nurses" element={<MatchingNurses />} />
+        <Route path="/transaction" element={<TransactionPage />} />
+        <Route path="/feedback" element={<FeedbackPage />} />
+        <Route path="/service-log" element={<ServiceLogForm />} />
+        <Route path="/attempt/:id" element={<AttemptDetail />} />
+        <Route path="/contract-form" element={<ContractForm />} />
+        <Route path="/matching/create" element={<MatchingPage />} />
+        <Route path="/price" element={<PricePage />} />
+        <Route path="/withdraw" element={<WithdrawPage />} />
+        <Route path="*" element={<Navigate to="/dashboard" />} />
+      </Routes>
+    );
+  }
 
-      {/* Các route khác giữ nguyên */}
-      <Route
-        path="/attempt/:id"
-        element={isLoggedIn ? <AttemptDetail /> : <Navigate to="/" />}
-      />
-      <Route
-        path="/contract-form"
-        element={isLoggedIn ? <ContractForm /> : <Navigate to="/" />}
-      />
-      <Route
-        path="/matching/create"
-        element={isLoggedIn ? <MatchingPage /> : <Navigate to="/" />}
-      />
-    </Routes>
-  );
+  // Fallback: nếu user có role lạ, chuyển về login-elderly
+  return <Navigate to="/login-elderly" />;
 };
 
 export default AppRoutes;

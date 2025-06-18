@@ -1,11 +1,10 @@
-import React, { useRef, useState, useEffect, useCallback } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import Webcam from "react-webcam";
 import jsQR from "jsqr";
+import axios from "axios";
 import "../assets/styles/pages/login-qr.css";
 import "../assets/styles/base/common.css";
 import "../assets/styles/base/buttons.css";
-import { login as loginApi } from "../services/authService";
-import { getMatching } from "../services/matchingService";
 
 function LoginQR() {
   const webcamRef = useRef(null);
@@ -15,34 +14,22 @@ function LoginQR() {
   const [mode, setMode] = useState("camera");
   const [isDragging, setIsDragging] = useState(false);
 
-  const handleLogin = async (card_id, role) => {
+  const handleLogin = async (qrBlob) => {
     try {
-      const res = await loginApi({ card_id });
-      const token = res.data.token;
+      const formData = new FormData();
+      formData.append("qrImage", qrBlob, "qr-image.png");
 
-      localStorage.setItem("card_id", card_id);
-      localStorage.setItem("user_id", card_id);
-      localStorage.setItem("role", role);
-      localStorage.setItem("token", token);
+      const res = await axios.post("https://phuchwa-project.onrender.com/users/qr-login", formData);
+      const { access_token, user } = res.data.data;
+
+      localStorage.setItem("token", access_token);
+      localStorage.setItem("user_id", user.user_id);
+      localStorage.setItem("role", user.role);
 
       setMessage("✅ Đăng nhập thành công!");
-      checkMatching(card_id);
+      window.location.href = "/dashboard";
     } catch (err) {
       setMessage("❌ Đăng nhập thất bại.");
-    }
-  };
-
-  const checkMatching = async (card_id) => {
-    try {
-      const res = await getMatching();
-      const match = res.data.find((m) => m.elderlyId === card_id);
-      if (match) {
-        window.location.href = "/dashboard";
-      } else {
-        window.location.href = "/matching";
-      }
-    } catch (err) {
-      window.location.href = "/dashboard";
     }
   };
 
@@ -55,56 +42,22 @@ function LoginQR() {
       canvas.height = video.videoHeight;
       context.drawImage(video, 0, 0, canvas.width, canvas.height);
       const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-      const code = jsQR(imageData.data, imageData.width, imageData.height);
+      const code = jsQR(imageData.data, canvas.width, canvas.height);
       if (code && code.data !== cardId) {
+        canvas.toBlob((blob) => {
+          if (blob) handleLogin(blob);
+        }, "image/png");
         setCardId(code.data);
-        try {
-          const parsed = JSON.parse(code.data);
-          if (parsed.card_id && parsed.role) {
-            // 🟢 Gọi login trực tiếp ở đây
-            loginApi({ card_id: parsed.card_id })
-              .then((res) => {
-                const token = res.data.token;
-                localStorage.setItem("card_id", parsed.card_id);
-                localStorage.setItem("user_id", parsed.card_id);
-                localStorage.setItem("role", parsed.role);
-                localStorage.setItem("token", token);
-                setMessage("✅ Đăng nhập thành công!");
-                checkMatching(parsed.card_id);
-              })
-              .catch(() => {
-                setMessage("❌ Đăng nhập thất bại.");
-              });
-          } else {
-            setMessage("❌ QR không hợp lệ (thiếu thông tin)");
-          }
-        } catch {
-          setMessage("❌ QR không hợp lệ (không phải JSON)");
-        }
       }
     }
   }, [cardId]);
-  
 
   useEffect(() => {
     if (mode === "camera") {
       const interval = setInterval(scanQRCode, 1000);
       return () => clearInterval(interval);
     }
-  }, [mode, scanQRCode]);
-
-  useEffect(() => {
-    const savedCardId = localStorage.getItem("card_id");
-    if (savedCardId) {
-      setCardId(savedCardId);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (cardId) {
-      localStorage.setItem("card_id", cardId);
-    }
-  }, [cardId]);
+  }, [mode, scanQRCode]); // ✅ Đã thêm scanQRCode vào dependency
 
   const handleImageUpload = (file) => {
     const img = new Image();
@@ -116,23 +69,9 @@ function LoginQR() {
         canvas.height = img.height;
         const ctx = canvas.getContext("2d");
         ctx.drawImage(img, 0, 0);
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const code = jsQR(imageData.data, canvas.width, canvas.height);
-        if (code) {
-          setCardId(code.data);
-          try {
-            const parsed = JSON.parse(code.data);
-            if (parsed.card_id && parsed.role) {
-              handleLogin(parsed.card_id, parsed.role);
-            } else {
-              setMessage("❌ QR không hợp lệ (thiếu thông tin)");
-            }
-          } catch (err) {
-            setMessage("❌ QR không hợp lệ (không phải JSON)");
-          }
-        } else {
-          setMessage("❌ Không tìm thấy mã QR!");
-        }
+        canvas.toBlob((blob) => {
+          if (blob) handleLogin(blob);
+        }, "image/png");
       };
       img.src = reader.result;
     };
