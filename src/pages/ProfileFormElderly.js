@@ -43,20 +43,25 @@ function ProfileForm() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!form.user_id) {
-      alert('❌ Thiếu user_id để lưu hồ sơ');
-      return;
-    }
+  e.preventDefault();
+  if (!form.user_id) {
+    alert('❌ Thiếu user_id để lưu hồ sơ');
+    return;
+  }
 
-    try {
-      await api.post('/elderly', form);
-      alert('✅ Tạo hồ sơ thành công!');
-      navigate('/dashboard');
-    } catch (err) {
-      alert('❌ Tạo hồ sơ thất bại: ' + (err.response?.data?.error || 'Lỗi server'));
-    }
-  };
+  try {
+    const token = localStorage.getItem('token'); // ✅ lấy token từ localStorage
+    await api.post('/elderly', form, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    alert('✅ Tạo hồ sơ thành công!');
+    navigate('/dashboard');
+  } catch (err) {
+    alert('❌ Tạo hồ sơ thất bại: ' + (err.response?.data?.error || 'Lỗi server'));
+  }
+};
 
   return (
     <div className="container">

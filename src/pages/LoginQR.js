@@ -1,14 +1,10 @@
-import { useNavigate } from "react-router-dom";
-import React, { useRef, useState, useEffect, useCallback } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import Webcam from "react-webcam";
 import jsQR from "jsqr";
+import axios from "axios";
 import "../assets/styles/pages/login-qr.css";
 import "../assets/styles/base/common.css";
 import "../assets/styles/base/buttons.css";
-import { login as loginApi } from "../services/authService";
-
-import { getMatching } from "../services/matchingService";
-import Swal from "sweetalert2";
 
 function LoginQR() {
   const webcamRef = useRef(null);
@@ -17,53 +13,23 @@ function LoginQR() {
   const [message, setMessage] = useState("");
   const [mode, setMode] = useState("camera");
   const [isDragging, setIsDragging] = useState(false);
-  const navigate = useNavigate();
-  useEffect(() => {
-    // Xóa thông tin đăng nhập mỗi lần vào trang này
-    localStorage.clear();
-  }, []);
 
-  const handleLogin = async (card_id, role) => {
+  const handleLogin = async (qrBlob) => {
     try {
-      const res = await loginApi({ card_id });
-      const token = res.data.token;
+      const formData = new FormData();
+      formData.append("qrImage", qrBlob, "qr-image.png");
 
-      localStorage.setItem("card_id", card_id);
-      localStorage.setItem("user_id", card_id);
-      localStorage.setItem("role", role);
-      localStorage.setItem("token", token);
+      const res = await axios.post("https://phuchwa-project.onrender.com/users/qr-login", formData);
+      const { access_token, user } = res.data.data;
 
-      Swal.fire({
-        icon: "success",
-        title: "Đăng nhập thành công!",
-        text: `Chào mừng bạn quay lại, vai trò: ${role}`,
-        confirmButtonText: "Tiếp tục",
-      }).then(() => {
-        checkMatching(card_id);
-      });
-    } catch (err) {
-      Swal.fire({
-        icon: "error",
-        title: "Đăng nhập thất bại",
-        text:
-          err?.response?.data?.message ||
-          "Đã xảy ra lỗi khi đăng nhập. Vui lòng thử lại.",
-        confirmButtonText: "Đóng",
-      });
-    }
-  };
+      localStorage.setItem("token", access_token);
+      localStorage.setItem("user_id", user.user_id);
+      localStorage.setItem("role", user.role);
 
-  const checkMatching = async (card_id) => {
-    try {
-      const res = await getMatching();
-      const match = res.data.find((m) => m.elderlyId === card_id);
-      if (match) {
-        window.location.href = "/dashboard";
-      } else {
-        window.location.href = "/matching";
-      }
-    } catch (err) {
+      setMessage("✅ Đăng nhập thành công!");
       window.location.href = "/dashboard";
+    } catch (err) {
+      setMessage("❌ Đăng nhập thất bại.");
     }
   };
 
@@ -76,45 +42,12 @@ function LoginQR() {
       canvas.height = video.videoHeight;
       context.drawImage(video, 0, 0, canvas.width, canvas.height);
       const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-      const code = jsQR(imageData.data, imageData.width, imageData.height);
+      const code = jsQR(imageData.data, canvas.width, canvas.height);
       if (code && code.data !== cardId) {
+        canvas.toBlob((blob) => {
+          if (blob) handleLogin(blob);
+        }, "image/png");
         setCardId(code.data);
-        try {
-          const parsed = JSON.parse(code.data);
-          if (parsed.card_id && parsed.role) {
-            // 🟢 Gọi login trực tiếp ở đây
-            loginApi({ card_id: parsed.card_id })
-              .then((res) => {
-                const token = res.data.token;
-                localStorage.setItem("card_id", parsed.card_id);
-                localStorage.setItem("user_id", parsed.card_id);
-                localStorage.setItem("role", parsed.role);
-                localStorage.setItem("token", token);
-                Swal.fire({
-                  icon: "success",
-                  title: "Đăng nhập thành công!",
-                  text: `Chào mừng bạn quay lại, vai trò: ${parsed.role}`,
-                  confirmButtonText: "Tiếp tục",
-                }).then(() => {
-                  checkMatching(parsed.card_id);
-                });
-              })
-              .catch((err) => {
-                Swal.fire({
-                  icon: "error",
-                  title: "Đăng nhập thất bại",
-                  text:
-                    err?.response?.data?.message ||
-                    "Đã xảy ra lỗi khi đăng nhập. Vui lòng thử lại.",
-                  confirmButtonText: "Đóng",
-                });
-              });
-          } else {
-            setMessage("❌ QR không hợp lệ (thiếu thông tin)");
-          }
-        } catch {
-          setMessage("❌ QR không hợp lệ (không phải JSON)");
-        }
       }
     }
   }, [cardId]);
@@ -124,20 +57,7 @@ function LoginQR() {
       const interval = setInterval(scanQRCode, 1000);
       return () => clearInterval(interval);
     }
-  }, [mode, scanQRCode]);
-
-  useEffect(() => {
-    const savedCardId = localStorage.getItem("card_id");
-    if (savedCardId) {
-      setCardId(savedCardId);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (cardId) {
-      localStorage.setItem("card_id", cardId);
-    }
-  }, [cardId]);
+  }, [mode, scanQRCode]); // ✅ Đã thêm scanQRCode vào dependency
 
   const handleImageUpload = (file) => {
     const img = new Image();
@@ -149,23 +69,9 @@ function LoginQR() {
         canvas.height = img.height;
         const ctx = canvas.getContext("2d");
         ctx.drawImage(img, 0, 0);
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const code = jsQR(imageData.data, canvas.width, canvas.height);
-        if (code) {
-          setCardId(code.data);
-          try {
-            const parsed = JSON.parse(code.data);
-            if (parsed.card_id && parsed.role) {
-              handleLogin(parsed.card_id, parsed.role);
-            } else {
-              setMessage("❌ QR không hợp lệ (thiếu thông tin)");
-            }
-          } catch (err) {
-            setMessage("❌ QR không hợp lệ (không phải JSON)");
-          }
-        } else {
-          setMessage("❌ Không tìm thấy mã QR!");
-        }
+        canvas.toBlob((blob) => {
+          if (blob) handleLogin(blob);
+        }, "image/png");
       };
       img.src = reader.result;
     };
@@ -236,12 +142,6 @@ function LoginQR() {
             {message}
           </p>
         )}
-        <div style={{ marginTop: "1rem", textAlign: "center" }}>
-          <p>Bạn là người dùng thông thường?</p>
-          <button onClick={() => navigate("/login-elderly")}>
-            Đăng nhập bằng Email
-          </button>
-        </div>
       </div>
     </div>
   );
