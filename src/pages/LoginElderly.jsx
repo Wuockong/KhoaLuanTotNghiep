@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../assets/styles/pages/login-elderly.css";
+import { useAuth } from "../contexts/AuthContext"; // ✅ Thêm dòng này
 
 function LoginElderly() {
   const [cardId, setCardId] = useState("");
@@ -9,26 +10,38 @@ function LoginElderly() {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
+  const { login } = useAuth(); // ✅ Sử dụng context
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("https://phuchwa-project.onrender.com/api/users/login", {
-        card_id: cardId,
-        password: password,
-      });
+      const res = await axios.post(
+        "https://phuchwa-project.onrender.com/api/users/login",
+        {
+          email: cardId, // 👈 thực chất là email
+          password: password,
+        }
+      );
 
-      const { token, user } = res.data;
+      const { access_token, user } = res.data.data;
 
-      localStorage.setItem("token", token);
-      localStorage.setItem("card_id", user.card_id);
-      localStorage.setItem("user_id", user.card_id);
+      // ✅ Lưu localStorage
+      localStorage.setItem("token", access_token);
+      localStorage.setItem("user_id", user.user_id);
       localStorage.setItem("role", user.role);
+
+      // ✅ Gọi context login để cập nhật trạng thái cho Navbar
+      login({
+        user_id: user.user_id,
+        role: user.role,
+      });
 
       setMessage("✅ Đăng nhập thành công!");
       setTimeout(() => {
         navigate("/dashboard");
       }, 1000);
     } catch (err) {
+      console.error("❌ Đăng nhập lỗi:", err);
       setMessage("❌ Sai thông tin đăng nhập hoặc lỗi server.");
     }
   };
@@ -39,7 +52,7 @@ function LoginElderly() {
       <form onSubmit={handleLogin} className="elderly-auth-form">
         <input
           type="text"
-          placeholder="Tài khoản"
+          placeholder="Email"
           value={cardId}
           onChange={(e) => setCardId(e.target.value)}
           required
@@ -67,10 +80,9 @@ function LoginElderly() {
       </div>
 
       <div className="elderly-auth-footer">
-          <p>Bạn là y tá?</p>
-          <button onClick={() => navigate("/login-nurse")}>Đăng nhập cho y tá</button>
-        </div>
-
+        <p>Bạn là y tá?</p>
+        <button onClick={() => navigate("/login-nurse")}>Đăng nhập cho y tá</button>
+      </div>
     </div>
   );
 }

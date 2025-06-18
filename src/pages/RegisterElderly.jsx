@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/apiClient';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import "../assets/styles/pages/register-elderly.css";
 
 function RegisterElderly() {
@@ -12,6 +13,8 @@ function RegisterElderly() {
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
   const [countdown, setCountdown] = useState(300); // 5 phút = 300 giây
+
+  const { login } = useAuth(); // ✅ Thêm để cập nhật context sau khi xác thực OTP
 
   useEffect(() => {
     if (step === 2 && countdown > 0) {
@@ -77,6 +80,8 @@ function RegisterElderly() {
         localStorage.setItem('token', access_token);
         localStorage.removeItem('raw_password');
         localStorage.removeItem('raw_email');
+
+        login({ user_id: user.user_id, role: user.role }); // ✅ cập nhật context để navbar phản ứng đúng
 
         setTimeout(() => navigate('/profile-elderly'), 1000);
       } catch (loginErr) {

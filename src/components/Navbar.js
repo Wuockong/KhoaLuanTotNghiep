@@ -18,7 +18,7 @@ function Navbar() {
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const isLoginElderly = location.pathname === "/login-elderly";
-  const isRegisterElderly = location.pathname === "/login-elderly";
+  const isRegisterElderly = location.pathname === "/register-elderly";
 
   return (
     <header className="navbar-full">
