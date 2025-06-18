@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getContracts, fillContract } from "../services/contractService";
+import { getContracts, fillContract } from "../../services/contractService";
 
 function TransactionPage() {
   const [contracts, setContracts] = useState([]);
@@ -53,8 +53,7 @@ function TransactionPage() {
         <label>Chọn hợp đồng:</label>
         <select
           value={selectedContractId}
-          onChange={(e) => setSelectedContractId(e.target.value)}
-        >
+          onChange={(e) => setSelectedContractId(e.target.value)}>
           <option value="">-- Chọn hợp đồng --</option>
           {contracts.map((contract) => (
             <option key={contract._id} value={contract._id}>

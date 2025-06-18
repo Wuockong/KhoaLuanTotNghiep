@@ -1,21 +1,10 @@
-// import React from "react";
-// import ContractFormWrapper from "../components/contract-form/ContractFormWrapper";
-
-// export default function ContractFormPage() {
-//   return (
-//     <div style={{ maxWidth: 600, margin: "auto", padding: "1rem" }}>
-//       <h2>📝 Tạo Hợp Đồng Chăm Sóc</h2>
-//       <ContractFormWrapper />
-//     </div>
-//   );
-// }
-// ElderlyPageSwitcher.jsx
+// TestAttemptSwitcher.jsx
 import React, { useState } from "react";
 import ThemeToggle from "../components/ui/ThemeToggle";
-import ContractFormWrapper from "../components/contract-form/ContractFormWrapper";
-import ContractForm from "../components/contract-form/ContractForm";
+import TestFormNurses from "./TestAttempt/TestFormNurses";
+import TestAttemptRJFS from "./TestAttempt/TestAttemptRJFS";
 
-const ElderlyPageSwitcher = () => {
+const TestAttemptSwitcher = () => {
   const [showRJFS, setShowRJFS] = useState(false);
 
   const handleToggle = () => {
@@ -39,10 +28,10 @@ const ElderlyPageSwitcher = () => {
       </div>
 
       <div style={{ padding: "1rem" }}>
-        {showRJFS ? <ContractFormWrapper /> : <ContractForm />}
+        {showRJFS ? <TestFormNurses /> : <TestAttemptRJFS />}
       </div>
     </div>
   );
 };
 
-export default ElderlyPageSwitcher;
+export default TestAttemptSwitcher;
