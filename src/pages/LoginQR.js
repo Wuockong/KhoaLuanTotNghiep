@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import Webcam from "react-webcam";
 import jsQR from "jsqr";
 import axios from "axios";
@@ -14,22 +14,24 @@ function LoginQR() {
   const [mode, setMode] = useState("camera");
   const [isDragging, setIsDragging] = useState(false);
 
-  const handleLogin = useCallback(async (card_id, role) => {
+  const handleLogin = async (qrBlob) => {
     try {
-      const res = await axios.post("/api/users/login", { card_id });
-      const token = res.data.token;
+      const formData = new FormData();
+      formData.append("qrImage", qrBlob, "qr-image.png");
 
-      localStorage.setItem("card_id", card_id);
-      localStorage.setItem("user_id", card_id);
-      localStorage.setItem("role", role);
-      localStorage.setItem("token", token);
+      const res = await axios.post("https://phuchwa-project.onrender.com/users/qr-login", formData);
+      const { access_token, user } = res.data.data;
+
+      localStorage.setItem("token", access_token);
+      localStorage.setItem("user_id", user.user_id);
+      localStorage.setItem("role", user.role);
 
       setMessage("✅ Đăng nhập thành công!");
-      checkMatching(card_id);
+      window.location.href = "/dashboard";
     } catch (err) {
       setMessage("❌ Đăng nhập thất bại.");
     }
-  }, []);
+  };
 
   const scanQRCode = useCallback(() => {
     const video = webcamRef.current?.video;
@@ -40,31 +42,24 @@ function LoginQR() {
       canvas.height = video.videoHeight;
       context.drawImage(video, 0, 0, canvas.width, canvas.height);
       const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-      const code = jsQR(imageData.data, imageData.width, imageData.height);
+      const code = jsQR(imageData.data, canvas.width, canvas.height);
       if (code && code.data !== cardId) {
+        canvas.toBlob((blob) => {
+          if (blob) handleLogin(blob);
+        }, "image/png");
         setCardId(code.data);
-        try {
-          const parsed = JSON.parse(code.data);
-          if (parsed.card_id && parsed.role) {
-            handleLogin(parsed.card_id, parsed.role);
-          } else {
-            setMessage("❌ QR không hợp lệ (thiếu thông tin)");
-          }
-        } catch (err) {
-          setMessage("❌ QR không hợp lệ (không phải JSON)");
-        }
       }
     }
-  }, [cardId, handleLogin]);
+  }, [cardId]);
 
   useEffect(() => {
     if (mode === "camera") {
       const interval = setInterval(scanQRCode, 1000);
       return () => clearInterval(interval);
     }
-  }, [mode, scanQRCode]);
+  }, [mode, scanQRCode]); // ✅ Đã thêm scanQRCode vào dependency
 
-  const handleImageUpload = useCallback((file) => {
+  const handleImageUpload = (file) => {
     const img = new Image();
     const reader = new FileReader();
     reader.onload = () => {
@@ -74,50 +69,21 @@ function LoginQR() {
         canvas.height = img.height;
         const ctx = canvas.getContext("2d");
         ctx.drawImage(img, 0, 0);
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const code = jsQR(imageData.data, canvas.width, canvas.height);
-        if (code) {
-          try {
-            const parsed = JSON.parse(code.data);
-            if (parsed.card_id && parsed.role) {
-              setCardId(parsed.card_id);
-              handleLogin(parsed.card_id, parsed.role);
-            } else {
-              setMessage("❌ QR không hợp lệ (thiếu thông tin)");
-            }
-          } catch {
-            setMessage("❌ QR không hợp lệ (không phải JSON)");
-          }
-        } else {
-          setMessage("❌ Không tìm thấy mã QR!");
-        }
+        canvas.toBlob((blob) => {
+          if (blob) handleLogin(blob);
+        }, "image/png");
       };
       img.src = reader.result;
     };
     reader.readAsDataURL(file);
-  }, [handleLogin]);
+  };
 
-  const onDrop = useCallback((e) => {
+  const onDrop = (e) => {
     e.preventDefault();
     setIsDragging(false);
     const file = e.dataTransfer.files[0];
     if (file) {
       handleImageUpload(file);
-    }
-  }, [handleImageUpload]);
-
-  const checkMatching = async (card_id) => {
-    try {
-      const res = await axios.get("https://phuchwa-project.onrender.com/matching");
-      const match = res.data.find((m) => m.elderlyId === card_id);
-      if (match) {
-        window.location.href = "/dashboard";
-      } else {
-        window.location.href = "/matching";
-      }
-    } catch (err) {
-      console.error("Error checking matching:", err);
-      window.location.href = "/dashboard";
     }
   };
 
