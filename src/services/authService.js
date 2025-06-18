@@ -1,8 +1,16 @@
 // src/services/authService.js
 import apiClient from "./apiClient";
+import axios from "axios";
 
-export const login = ({ card_id }) => {
-  return apiClient.post("/users/login", { card_id });
+export const loginWithQR = async (qrBlob) => {
+  const formData = new FormData();
+  formData.append("qrImage", qrBlob, "qr-image.png");
+
+  const res = await axios.post(
+    "https://phuchwa-project.onrender.com/users/qr-login",
+    formData
+  );
+  return res.data.data;
 };
 export const logout = () => {
   return apiClient.post("/logout");
