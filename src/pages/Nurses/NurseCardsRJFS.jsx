@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { withTheme } from "@rjsf/core";
 import { Theme as MuiTheme } from "@rjsf/mui";
+import validator from "@rjsf/validator-ajv8";
+
 const Form = withTheme(MuiTheme);
 const defaultJsonSchema = {
   title: "Thông tin thẻ ",
@@ -163,6 +165,7 @@ const NurseInfoRJFS = () => {
           schema={schema}
           uiSchema={uiSchema}
           formData={formData}
+          validator={validator}
           onChange={({ formData }) => setFormData(formData)}
           onSubmit={({ formData }) =>
             console.log("Form submitted with data:", formData)

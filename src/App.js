@@ -8,14 +8,14 @@ import CreateCard from "./pages/CreateCard";
 import LoginElderly from "./pages/LoginElderly";
 import RegisterElderly from "./pages/RegisterElderly";
 import MatchingNurses from "./pages/MatchingNurses";
-import TestFormNurses from "./pages/TestAttempt/TestFormNurses";
-import TransactionPage from "./pages/transactions/TransactionPage";
+import TestFormNurses from "./pages/TestAttemptSwitcher";
+import TransactionPage from "./pages/TestAttemptSwitcher";
 import ServiceLogForm from "./pages/ServiceLogForm";
 import FeedbackPage from "./pages/FeedbackPage";
 import AttemptDetail from "./pages/AttemptDetail";
 import ProfileFormElderly from "./pages/ProfileFormElderly";
 import ProfileFormNurse from "./pages/Nurses/ProfileFormNurse";
-import AccountElderly from "./pages/AccountElderly";
+import AccountElderly from "./pages/ProfileElderly";
 
 function App() {
   const token = localStorage.getItem("token");
@@ -26,7 +26,16 @@ function App() {
       <Navbar />
       <Routes>
         {/* Trang mặc định: nếu đã đăng nhập thì vào dashboard, chưa thì vào login elderly */}
-        <Route path="/" element={token ? <Navigate to="/dashboard" /> : <Navigate to="/login-elderly" />} />
+        <Route
+          path="/"
+          element={
+            token ? (
+              <Navigate to="/dashboard" />
+            ) : (
+              <Navigate to="/login-elderly" />
+            )
+          }
+        />
 
         {/* Đăng nhập / đăng ký */}
         <Route path="/login-elderly" element={<LoginElderly />} />
