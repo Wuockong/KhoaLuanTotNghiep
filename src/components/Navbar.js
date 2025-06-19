@@ -26,8 +26,8 @@ function Navbar() {
       <div className="navbar-right">
         {!user && !isLoginElderly && !isRegisterElderly ? (
           <>
-            <button onClick={() => navigate("/register-nurse")}>🎟️ Tạo QR</button>
-            <button onClick={() => navigate("/login-nurse")}>🔑 Đăng nhập</button>
+            <button onClick={() => navigate("/register-elderly")}>📝 Đăng ký</button>
+            <button onClick={() => navigate("/login-elderly")}>🔑 Đăng nhập</button>
           </>
         ) : user && (
           <>
