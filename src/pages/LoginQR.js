@@ -19,7 +19,7 @@ function LoginQR() {
       const formData = new FormData();
       formData.append("qrImage", qrBlob, "qr-image.png");
 
-      const res = await axios.post("https://phuchwa-project.onrender.com/users/qr-login", formData);
+      const res = await axios.post("https://phuchwa-project.onrender.com/api/users/qr-login", formData);
       const { access_token, user } = res.data.data;
 
       localStorage.setItem("token", access_token);

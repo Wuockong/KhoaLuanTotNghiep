@@ -2,27 +2,72 @@ import React, { useState, useRef, useEffect } from "react";
 import { QRCodeCanvas } from "qrcode.react";
 import * as htmlToImage from "html-to-image";
 import download from "downloadjs";
+import { useNavigate } from "react-router-dom";
+import api from '../services/apiClient';
 import '../assets/styles/pages/create-card.css';
 import '../assets/styles/base/buttons.css';
 import '../assets/styles/base/common.css';
 
 function CreateCard() {
-  const [code, setCode] = useState("");
+  const [inputCode, setInputCode] = useState(""); // số do người dùng nhập
   const [showQR, setShowQR] = useState(false);
+  const [error, setError] = useState("");
   const qrRef = useRef(null);
+  const [code, setCode] = useState("");
+  const navigate = useNavigate();
 
-  const handleGenerateQR = () => {
-    if (code.trim()) {
-      const qrData = JSON.stringify({
-        card_id: code.trim(),
-        role: "nurses",
-      });
-      setCode(qrData); // cập nhật code thành nội dung JSON
-      setShowQR(true);
-      localStorage.setItem("card_id", code.trim());
-      localStorage.setItem("role", "nurses"); // lưu mặc định vai trò
-    }
-  };
+  const handleGenerateQR = async () => {
+  const fullCode = 'STU' + inputCode.trim();
+  const storedStudentId = localStorage.getItem("student_id");
+  const token = localStorage.getItem("token");
+
+  if (!inputCode.trim()) {
+    setError("❌ Vui lòng nhập mã số.");
+    return;
+  }
+
+  if (fullCode !== storedStudentId) {
+    setError(`❌ Mã STU không trùng khớp! Bạn nhập: ${fullCode}, yêu cầu: ${storedStudentId}`);
+    return;
+  }
+
+  try {
+    const res = await api.post(
+      '/cards',
+      { student_id: fullCode },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+    console.log("🔍 API /cards response:", res.data);
+    const { card_id } = res.data.data;
+
+    const qrData = JSON.stringify({
+      card_id, // ✅ Lấy đúng từ API
+      role: "nurses"
+    });
+
+    console.log("✅ QR Data:", qrData);
+
+    setCode(qrData);
+    localStorage.setItem("card_id", card_id);
+    localStorage.setItem("role", "nurses");
+
+    setError("");
+    setShowQR(true);
+
+    setTimeout(() => {
+      navigate("/dashboard");
+    }, 1500);
+  } catch (err) {
+    console.error("❌ Lỗi tạo QR:", err);
+    setError("❌ Lỗi tạo QR: " + (err.response?.data?.message || "Unauthorized hoặc lỗi server"));
+  }
+};
+
+
 
   // Tự động lưu QR sau khi render
   useEffect(() => {
@@ -46,14 +91,15 @@ function CreateCard() {
             <h2>Tạo Mã QR</h2>
             <input
               type="text"
-              placeholder="Nhập mã số..."
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
+              placeholder="Nhập mã số (chỉ số)"
+              value={inputCode}
+              onChange={(e) => setInputCode(e.target.value)}
               className="input-box"
             />
             <button className="animated-btn" onClick={handleGenerateQR}>
               Tạo QR
             </button>
+            {error && <p style={{ color: 'red', marginTop: 10 }}>{error}</p>}
           </>
         ) : (
           <div className="qr-section">

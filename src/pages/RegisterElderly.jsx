@@ -34,6 +34,9 @@ function RegisterElderly() {
 
       localStorage.setItem('raw_password', password);
       localStorage.setItem('raw_email', email);
+      if (isNurse) {
+        localStorage.setItem('raw_student_id', 'STU' + studentIdNumber.trim());
+      }
 
       setMessage('✅ Đăng ký thành công! Đang gửi OTP...');
       await handleSendOTP();
@@ -60,6 +63,7 @@ function RegisterElderly() {
 
       const rawPassword = localStorage.getItem('raw_password');
       const rawEmail = localStorage.getItem('raw_email');
+      const rawStudentId = localStorage.getItem('raw_student_id');
       if (!rawPassword || !rawEmail) {
         setMessage('❌ Không tìm thấy email hoặc mật khẩu gốc để đăng nhập.');
         return;
@@ -71,6 +75,12 @@ function RegisterElderly() {
         localStorage.setItem('user_id', user.user_id);
         localStorage.setItem('role', user.role);
         localStorage.setItem('token', access_token);
+
+        if (rawStudentId) {
+          localStorage.setItem('student_id', rawStudentId); 
+          localStorage.removeItem('raw_student_id');        
+        }
+
         localStorage.removeItem('raw_password');
         localStorage.removeItem('raw_email');
         login({ user_id: user.user_id, role: user.role });
