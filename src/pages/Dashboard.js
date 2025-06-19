@@ -9,14 +9,13 @@ function Dashboard() {
     const fetchUser = async () => {
       try {
         const res = await getAccountInfo();
-        setUser(res.user); // Lấy ra user từ res.data.user nếu đúng theo API mẫu
+        setUser(res.user);
       } catch (err) {
         console.error("Lỗi lấy thông tin người dùng:", err);
       }
     };
     fetchUser();
   }, []);
-
 
   if (!user) return <div>⏳ Đang tải thông tin...</div>;
 
@@ -51,22 +50,29 @@ function Dashboard() {
 
       <div className="feature-grid">
         <div className="feature-box">📋 Hồ sơ cá nhân</div>
-        <div className="feature-box">🔍 Kết quả test</div>
+
         {role === "elderly" && (
           <>
-            <div className="feature-box">🤝 Matching</div>
-            <div className="feature-box">📖 Nhật ký chăm sóc</div>
+            <div className="feature-box">📄 Làm khảo sát nhu cầu</div>
+            <div className="feature-box">🧭 Matching</div>
+            <div className="feature-box">💰 Thực hiện thanh toán</div>
+            <div className="feature-box">📜 Lịch sử giao dịch</div>
+            <div className="feature-box">⭐ Đánh giá</div>
             <div className="feature-box">📤 Gửi phản hồi</div>
             <div className="feature-box">⚖️ Tranh chấp</div>
           </>
         )}
+
         {role === "nurse" && (
           <>
-            <div className="feature-box">📥 Yêu cầu chăm sóc</div>
-            <div className="feature-box">🧾 Lịch làm việc</div>
+            <div className="feature-box">📝 Làm bài test</div>
+            <div className="feature-box">📄 Làm khảo sát</div>
+            <div className="feature-box">📬 Matching</div>
+            <div className="feature-box">⭐ Nhận đánh giá</div>
+            <div className="feature-box">🏆 Hồ sơ + rank</div>
           </>
         )}
-        <div className="feature-box">💸 Giao dịch</div>
+
         <div className="feature-box">📬 Hộp thư</div>
       </div>
     </div>
