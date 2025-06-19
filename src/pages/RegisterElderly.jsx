@@ -5,16 +5,16 @@ import { useAuth } from '../contexts/AuthContext';
 import "../assets/styles/pages/register-elderly.css";
 
 function RegisterElderly() {
-  const [step, setStep] = useState(1); // 1: Đăng ký -> 2: Nhập OTP
+  const [step, setStep] = useState(1);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [otp, setOtp] = useState('');
   const [studentIdNumber, setStudentIdNumber] = useState('');
+  const [isNurse, setIsNurse] = useState(false);
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
-  const [countdown, setCountdown] = useState(300); // 5 phút = 300 giây
-
-  const { login } = useAuth(); // ✅ Thêm để cập nhật context sau khi xác thực OTP
+  const [countdown, setCountdown] = useState(300);
+  const { login } = useAuth();
 
   useEffect(() => {
     if (step === 2 && countdown > 0) {
@@ -27,16 +27,15 @@ function RegisterElderly() {
     try {
       await api.post('/users/register', {
         email,
-        password, // 👈 gửi password raw
-        role: 'elderly',
-        student_id: 'STU' + studentIdNumber.trim(),
+        password,
+        role: isNurse ? 'nurse' : 'elderly',
+        student_id: isNurse ? 'STU' + studentIdNumber.trim() : undefined
       });
 
-      localStorage.setItem('raw_password', password); // 🔒 lưu password gốc tạm thời để đăng nhập lại
+      localStorage.setItem('raw_password', password);
       localStorage.setItem('raw_email', email);
 
       setMessage('✅ Đăng ký thành công! Đang gửi OTP...');
-
       await handleSendOTP();
     } catch (err) {
       setMessage('❌ Đăng ký thất bại: ' + (err.response?.data?.message || 'Lỗi server'));
@@ -47,10 +46,6 @@ function RegisterElderly() {
     try {
       await api.post('/users/send-verify-email', { email });
       setMessage('✅ OTP đã gửi đến email. Vui lòng nhập mã.');
-      console.log('📦 LocalStorage sau gửi OTP:', {
-        raw_email: localStorage.getItem('raw_email'),
-        raw_password: localStorage.getItem('raw_password'),
-      });
       setStep(2);
       setCountdown(300);
     } catch (err) {
@@ -72,18 +67,21 @@ function RegisterElderly() {
 
       try {
         const loginRes = await api.post('/users/login', { email: rawEmail, password: rawPassword });
-        console.log('🔐 Đăng nhập thành công:', loginRes.data);
-
         const { access_token, user } = loginRes.data.data;
         localStorage.setItem('user_id', user.user_id);
         localStorage.setItem('role', user.role);
         localStorage.setItem('token', access_token);
         localStorage.removeItem('raw_password');
         localStorage.removeItem('raw_email');
+        login({ user_id: user.user_id, role: user.role });
 
-        login({ user_id: user.user_id, role: user.role }); // ✅ cập nhật context để navbar phản ứng đúng
-
-        setTimeout(() => navigate('/profile-elderly'), 1000);
+        setTimeout(() => {
+          if (user.role === 'nurse') {
+            navigate('/nurse');
+          } else {
+            navigate('/profile-elderly');
+          }
+        }, 1000);
       } catch (loginErr) {
         setMessage('❌ Đăng nhập thất bại: ' + (loginErr.response?.data?.message || 'Lỗi xác thực'));
         console.error('❌ Lỗi đăng nhập:', loginErr);
@@ -96,7 +94,7 @@ function RegisterElderly() {
   return (
     <div className="container">
       <div className="card-box">
-        <h2>📝 Đăng ký Người cao tuổi</h2>
+        <h2>📝 Đăng ký</h2>
 
         {step === 1 && (
           <>
@@ -114,13 +112,29 @@ function RegisterElderly() {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            <input
-              type="number"
-              placeholder="Mã số STU (chỉ nhập số)"
-              value={studentIdNumber}
-              onChange={(e) => setStudentIdNumber(e.target.value)}
-              required
-            />
+
+            {isNurse && (
+              <input
+                type="number"
+                placeholder="Mã số STU (chỉ nhập số)"
+                value={studentIdNumber}
+                onChange={(e) => setStudentIdNumber(e.target.value)}
+                required
+              />
+            )}
+
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginBottom: '10px' }}>
+              <label style={{ display: 'flex', alignItems: 'center' }}>
+                <input
+                  type="checkbox"
+                  checked={isNurse}
+                  onChange={() => setIsNurse(!isNurse)}
+                  style={{ marginRight: '5px' }}
+                />
+                Bạn là y tá?
+              </label>
+            </div>
+
             <button onClick={handleRegister}>Đăng ký</button>
           </>
         )}

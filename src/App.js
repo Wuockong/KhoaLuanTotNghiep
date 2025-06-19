@@ -14,6 +14,7 @@ import ServiceLogForm from "./pages/ServiceLogForm";
 import FeedbackPage from "./pages/FeedbackPage";
 import AttemptDetail from "./pages/AttemptDetail";
 import ProfileFormElderly from "./pages/ProfileFormElderly";
+import ProfileFormNurse from "./pages/Nurses/ProfileFormNurse";
 import AccountElderly from "./pages/AccountElderly";
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
         <Route path="/login-nurse" element={<LoginQR />} />
         <Route path="/register-nurse" element={<CreateCard />} />
         <Route path="/profile-elderly" element={<ProfileFormElderly />} />
+        <Route path="/nurse" element={<ProfileFormNurse />} />
 
         {/* Trang chính */}
         <Route path="/dashboard" element={<Dashboard />} />
