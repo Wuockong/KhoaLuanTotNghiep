@@ -1,5 +1,5 @@
-// src/services/authService.js
 import apiClient from "./apiClient";
+import axios from "axios";
 
 export const login = ({ card_id }) => {
   return apiClient.post("/users/login", { card_id });
@@ -28,3 +28,14 @@ export const getUserToken = () => {
 export const getUserName = () => {
   return localStorage.getItem("name");
 };
+
+export const getAccountInfo = async () => {
+  const token = localStorage.getItem("token");
+  const res = await axios.get("/users/account", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return res.data;
+};
+

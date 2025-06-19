@@ -1,0 +1,47 @@
+.dashboard-container {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+  flex-wrap: wrap;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.left-panel, .right-panel {
+  flex: 1;
+  min-width: 300px;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0,0,0,0.1);
+  background-color: #ffffff;
+}
+
+.left-panel {
+  background-color: #f9f9f9;
+}
+
+.right-panel ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.right-panel ul li {
+  margin-bottom: 1rem;
+}
+
+.right-panel ul li a {
+  text-decoration: none;
+  font-weight: bold;
+  color: #0066cc;
+  transition: all 0.2s;
+}
+
+.right-panel ul li a:hover {
+  color: #004999;
+  text-decoration: underline;
+}
+
+.error {
+  color: red;
+  font-weight: bold;
+  text-align: center;
+}
