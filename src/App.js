@@ -9,14 +9,14 @@ import LoginElderly from "./pages/LoginElderly";
 import RegisterElderly from "./pages/RegisterElderly";
 import MatchingNurses from "./pages/MatchingNurses";
 import TestFormNurses from "./pages/TestAttemptSwitcher";
-import TransactionPage from "./pages/TestAttemptSwitcher";
+import TransactionPage from "./pages/TransactionSwitcher";
 import ServiceLogForm from "./pages/ServiceLogForm";
 import FeedbackPage from "./pages/FeedbackPage";
 import AttemptDetail from "./pages/AttemptDetail";
 import ProfileFormElderly from "./pages/ProfileFormElderly";
 import ProfileFormNurse from "./pages/Nurses/ProfileFormNurse";
 import AccountElderly from "./pages/ProfileElderly";
-
+import EmergencyAlertForm from "./components/EmergencyAlertForm";
 function App() {
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
@@ -48,13 +48,14 @@ function App() {
         {/* Trang chính */}
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/account-elderly" element={<AccountElderly />} />
+        <Route path="/alert" element={<EmergencyAlertForm />} />
 
         {/* Chức năng dành cho nurse */}
         {role === "nurse" && (
           <>
+            <Route path="/transaction" element={<TransactionPage />} />
             <Route path="/test" element={<TestFormNurses />} />
             <Route path="/matching" element={<MatchingNurses />} />
-            <Route path="/transaction" element={<TransactionPage />} />
             <Route path="/servicelog" element={<ServiceLogForm />} />
             <Route path="/feedback" element={<FeedbackPage />} />
             <Route path="/attempt-detail" element={<AttemptDetail />} />
