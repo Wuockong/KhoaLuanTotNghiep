@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Circle, Tooltip } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Button } from "./ui/button";
-import { Input } from "./ui/input.jsx";
-import { Card, CardContent } from "./ui/card.jsx";
-
-const DEFAULT_POSITION = [10.823098, 106.629664];
+import { Input } from "./ui/input";
+import { Card, CardContent } from "./ui/card";
+import { fetchNearbyHospitals } from "../services/osmService";
+import _ from "lodash";
+// import L from "leaflet";
+import "../../src/assets/styles/pages/alertForm.css";
 
 export default function EmergencyAlertForm() {
   const [formData, setFormData] = useState({
@@ -15,81 +17,120 @@ export default function EmergencyAlertForm() {
     triggered_by: "y_ta",
     incident_type: "nga",
     description: "",
-    location: {
-      type: "Point",
-      coordinates: [106.629664, 10.823098],
-    },
   });
-
   const [submittedData, setSubmittedData] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleLocationChange = (e) => {
-    const coords = e.target.value.split(",").map(Number);
-    setFormData({
-      ...formData,
-      location: { ...formData.location, coordinates: [coords[1], coords[0]] },
-    });
-  };
-
   const handleSubmit = () => {
-    const hospital = {
-      hospital_id: "hospital123",
-      name: "Bệnh viện Trung Ương",
-      address: "123 Đường Y Tế, TP.HCM",
-      contact_phone: "0123456789",
-      distance_km: 1.2,
-    };
+    if (!navigator.geolocation) {
+      alert("Trình duyệt không hỗ trợ định vị.");
+      return;
+    }
+    setLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        try {
+          const lat = pos.coords.latitude;
+          const lng = pos.coords.longitude;
 
-    const payload = {
-      ...formData,
-      _id: Date.now().toString(),
-      status: "da_nhan",
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      received_at: new Date().toISOString(),
-      medical_facility_notified: true,
-      hospital_assigned: hospital,
-      notified_contacts: [],
-      action_logs: [
-        {
-          timestamp: new Date().toISOString(),
-          action: "received",
-          performed_by: {
-            user_id: "system",
-            name: "Hệ thống",
-            role: "auto",
-          },
-          details: "Cảnh báo đã được hệ thống nhận.",
-        },
-        {
-          timestamp: new Date().toISOString(),
-          action: "assigned_to_hospital",
-          performed_by: {
-            user_id: "system",
-            name: "Hệ thống",
-            role: "auto",
-          },
-          details: `Đã gửi hồ sơ tới bệnh viện ${hospital.name}, cách ${hospital.distance_km} km.`,
-        },
-      ],
-    };
+          const hospitals = await fetchNearbyHospitals(lat, lng);
+          if (!hospitals.length)
+            throw new Error("Không tìm thấy bệnh viện gần.");
 
-    setSubmittedData(payload);
-    downloadJSON(payload);
+          const nearest = _.minBy(hospitals, (h) => {
+            const dLat = h.lat - lat;
+            const dLng = h.lng - lng;
+            return dLat * dLat + dLng * dLng;
+          });
+
+          const now = new Date();
+          const alertCode =
+            (formData.alert_code || "NGA") +
+            now.toISOString().slice(0, 16).replace(/[-:T]/g, "");
+
+          const payload = {
+            _id: Date.now().toString(),
+            alert_code: alertCode,
+            elderly_id: formData.elderly_id,
+            nurse_id: formData.nurse_id || null,
+            triggered_by: formData.triggered_by,
+            incident_type: formData.incident_type,
+            description: formData.description,
+            location: {
+              type: "Point",
+              coordinates: [lng, lat],
+            },
+            status: "da_nhan",
+            created_at: now.toISOString(),
+            received_at: now.toISOString(),
+            updated_at: now.toISOString(),
+            medical_facility_notified: true,
+            hospital_assigned: {
+              hospital_id: nearest.id || "unknown",
+              name: nearest.name || "unknown",
+              address: nearest.address || "unknown",
+              contact_phone: nearest.phone || "unknown",
+              distance_km: nearest.distance || 0,
+              latitude: nearest.lat,
+              longitude: nearest.lng,
+              rating: nearest.rating || 0,
+              type: nearest.type || "general",
+              emergency_available: nearest.emergency_available || true,
+            },
+            notified_contacts: [],
+            action_logs: [
+              {
+                timestamp: now.toISOString(),
+                action: "received",
+                performed_by: {
+                  user_id: "system",
+                  name: "Hệ thống",
+                  role: "auto",
+                },
+                details: "Cảnh báo đã được hệ thống nhận.",
+              },
+              {
+                timestamp: now.toISOString(),
+                action: "assigned_to_hospital",
+                performed_by: {
+                  user_id: "system",
+                  name: "Hệ thống",
+                  role: "auto",
+                },
+                details: `Đã gửi tới bệnh viện ${nearest.name}.`,
+              },
+            ],
+          };
+
+          setSubmittedData(payload);
+          downloadJSON(payload, `alert_${payload._id}.json`);
+        } catch (err) {
+          alert(err.message);
+        } finally {
+          setLoading(false);
+        }
+      },
+      (err) => {
+        alert("Lỗi lấy vị trí: " + err.message);
+        setLoading(false);
+      }
+    );
   };
 
-  const downloadJSON = (data) => {
+  const downloadJSON = (data, filename) => {
     const blob = new Blob([JSON.stringify(data, null, 2)], {
       type: "application/json",
     });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `emergency_alert_${data._id}.json`;
-    link.click();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -98,7 +139,7 @@ export default function EmergencyAlertForm() {
         <CardContent className="space-y-4">
           <h2 className="text-xl font-bold">Tạo Cảnh Báo Khẩn Cấp</h2>
           <Input
-            placeholder="Mã cảnh báo (VD: NGA202510051430)"
+            placeholder="Mã cảnh báo (3 ký tự)"
             name="alert_code"
             onChange={handleChange}
           />
@@ -108,7 +149,7 @@ export default function EmergencyAlertForm() {
             onChange={handleChange}
           />
           <Input
-            placeholder="ID y tá (có thể để trống)"
+            placeholder="ID y tá (tùy chọn)"
             name="nurse_id"
             onChange={handleChange}
           />
@@ -117,52 +158,66 @@ export default function EmergencyAlertForm() {
             name="description"
             onChange={handleChange}
           />
-          <Input
-            placeholder="Tọa độ vị trí (lat,lng) VD: 10.823098,106.629664"
-            onChange={handleLocationChange}
-          />
-          <Button onClick={handleSubmit}>Gửi cảnh báo</Button>
+          <Button onClick={handleSubmit} disabled={loading}>
+            {loading ? "Đang lấy vị trí..." : "Gửi cảnh báo"}
+          </Button>
         </CardContent>
       </Card>
 
       <Card>
         <CardContent>
-          <h2 className="text-xl font-bold mb-2">Bản đồ vị trí cảnh báo</h2>
-          <MapContainer
-            center={DEFAULT_POSITION}
-            zoom={13}
-            style={{ height: "400px", width: "100%" }}>
-            <TileLayer
-              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-            {submittedData && (
-              <>
-                <Marker
-                  position={[
-                    submittedData.location.coordinates[1],
-                    submittedData.location.coordinates[0],
-                  ]}>
-                  <Popup>Vị trí người gửi</Popup>
-                </Marker>
-                <Marker
-                  position={[
-                    submittedData.location.coordinates[1] + 0.01,
-                    submittedData.location.coordinates[0],
-                  ]}>
-                  <Popup>
-                    Bệnh viện: {submittedData.hospital_assigned?.name}
-                  </Popup>
-                </Marker>
-              </>
-            )}
-          </MapContainer>
-
-          {submittedData && (
-            <div className="mt-4 text-green-600 font-semibold">
-              Đã gửi thông tin tới bệnh viện gần nhất:{" "}
-              {submittedData.hospital_assigned?.name}
-            </div>
+          <h2 className="text-xl font-bold mb-2">Bản đồ cảnh báo</h2>
+          {submittedData ? (
+            <MapContainer
+              center={[
+                submittedData.location.coordinates[1],
+                submittedData.location.coordinates[0],
+              ]}
+              zoom={14}
+              style={{ height: 400, width: "100%" }}>
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution="&copy; OSM"
+              />
+              <Circle
+                center={[
+                  submittedData.location.coordinates[1],
+                  submittedData.location.coordinates[0],
+                ]}
+                radius={50}
+                color="red"
+                fillOpacity={0.6}>
+                <Tooltip direction="top" offset={[0, -10]} opacity={1}>
+                  <span>
+                    📍 <strong>Vị trí người dùng</strong>
+                    <br />
+                    Kinh độ: {submittedData.location.coordinates[0].toFixed(5)}
+                    <br />
+                    Vĩ độ: {submittedData.location.coordinates[1].toFixed(5)}
+                  </span>
+                </Tooltip>
+              </Circle>
+              <Circle
+                center={[
+                  submittedData.hospital_assigned.latitude,
+                  submittedData.hospital_assigned.longitude,
+                ]}
+                radius={70}
+                color="blue"
+                fillOpacity={0.4}>
+                <Tooltip direction="top" offset={[0, -10]} opacity={1}>
+                  <span>
+                    🏥 <strong>{submittedData.hospital_assigned.name}</strong>
+                    <br />
+                    Địa chỉ: {submittedData.hospital_assigned.address}
+                    <br />
+                    Liên hệ: {submittedData.hospital_assigned.contact_phone}
+                  </span>
+                </Tooltip>
+              </Circle>
+            </MapContainer>
+          ) : (
+            <p className="text-gray-500">Chưa có cảnh báo nào.</p>
           )}
         </CardContent>
       </Card>
