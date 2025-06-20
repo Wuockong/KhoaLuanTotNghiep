@@ -36,6 +36,7 @@ function Navbar() {
             {menuOpen && (
               <div className="account-menu">
                 <button onClick={() => navigate("/account-elderly")}>👤 Thông tin tài khoản</button>
+                <button onClick={() => navigate("/dashboard")}>🏠 Home</button>
                 <button onClick={handleLogout}>🚪 Đăng xuất</button>
               </div>
             )}

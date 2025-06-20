@@ -8,14 +8,36 @@ import CreateCard from "./pages/CreateCard";
 import LoginElderly from "./pages/LoginElderly";
 import RegisterElderly from "./pages/RegisterElderly";
 import MatchingNurses from "./pages/MatchingNurses";
+<<<<<<< Updated upstream
 import TestFormNurses from "./pages/TestAttempt/TestFormNurses";
 import TransactionPage from "./pages/transactions/TransactionPage";
+=======
+import TestFormNurses from "./pages/TestAttemptSwitcher";
+import TransactionPage from "./pages/TestAttemptSwitcher";
+>>>>>>> Stashed changes
 import ServiceLogForm from "./pages/ServiceLogForm";
 import FeedbackPage from "./pages/FeedbackPage";
 import AttemptDetail from "./pages/AttemptDetail";
 import ProfileFormElderly from "./pages/ProfileFormElderly";
 import ProfileFormNurse from "./pages/Nurses/ProfileFormNurse";
+<<<<<<< Updated upstream
 import AccountElderly from "./pages/AccountElderly";
+=======
+import AccountElderly from "./pages/ProfileElderly";
+
+// Các trang mới cho elderly
+import Profile from "./pages/Elderly/Profile";
+import Survey from "./pages/Elderly/Survey";
+import Payment from "./pages/Elderly/Payment";
+import History from "./pages/Elderly/History";
+import Ratings from "./pages/Elderly/Ratings";
+import Feedback from "./pages/Elderly/Feedback";
+import Disputes from "./pages/Elderly/Disputes";
+import MatchingPage1 from "./pages/Elderly/MatchingPage1";
+import MatchingActions from './pages/Elderly/MatchingActions';
+
+import MatchingPage from "./pages/MatchingPage";
+>>>>>>> Stashed changes
 
 function App() {
   const token = localStorage.getItem("token");
@@ -25,8 +47,15 @@ function App() {
     <>
       <Navbar />
       <Routes>
+<<<<<<< Updated upstream
         {/* Trang mặc định: nếu đã đăng nhập thì vào dashboard, chưa thì vào login elderly */}
         <Route path="/" element={token ? <Navigate to="/dashboard" /> : <Navigate to="/login-elderly" />} />
+=======
+        <Route
+          path="/"
+          element={token ? <Navigate to="/dashboard" /> : <Navigate to="/login-elderly" />}
+        />
+>>>>>>> Stashed changes
 
         {/* Đăng nhập / đăng ký */}
         <Route path="/login-elderly" element={<LoginElderly />} />
@@ -39,6 +68,25 @@ function App() {
         {/* Trang chính */}
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/account-elderly" element={<AccountElderly />} />
+<<<<<<< Updated upstream
+=======
+
+        {/* Các trang mới cho elderly */}
+        {role === "elderly" && (
+          <>
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/survey" element={<Survey />} />
+            <Route path="/payment" element={<Payment />} />
+            <Route path="/history" element={<History />} />
+            <Route path="/ratings" element={<Ratings />} />
+            <Route path="/feedback" element={<Feedback />} />
+            <Route path="/disputes" element={<Disputes />} />
+            <Route path="/matching" element={<MatchingPage1 />} />
+            <Route path="/matching/actions" element={<MatchingActions />} />
+
+          </>
+        )}
+>>>>>>> Stashed changes
 
         {/* Chức năng dành cho nurse */}
         {role === "nurse" && (

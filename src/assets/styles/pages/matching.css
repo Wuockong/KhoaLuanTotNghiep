@@ -1,0 +1,164 @@
+/* --- General Container --- */
+.matching-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 20px;
+  background-color: #eef2f7; /* Nền xám nhẹ cho toàn trang */
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* --- The main card for styling --- */
+.matching-card {
+  width: 100%;
+  max-width: 800px; /* Giới hạn chiều rộng tối đa */
+  background-color: #ffffff; /* Nền trắng cho card */
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border: 1px solid #dbe3eb;
+}
+
+/* --- Title Style --- */
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1a3b5d;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f0f4f8;
+  text-align: left;
+}
+
+/* --- Layout for form rows --- */
+.form-row {
+  display: flex;
+  flex-wrap: wrap; /* Cho phép xuống dòng trên màn hình nhỏ */
+  gap: 20px; /* Khoảng cách giữa các trường */
+  margin-bottom: 20px;
+}
+
+/* --- General Form Group --- */
+.form-group {
+  flex: 1; /* Giúp các trường co giãn đều nhau */
+  min-width: 250px; /* Chiều rộng tối thiểu trước khi xuống dòng */
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #4a5568;
+  margin-bottom: 8px;
+}
+
+/* --- Input and Select fields --- */
+.form-group input[type="text"],
+.form-group input[type="datetime-local"],
+.form-group select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cbd5e0;
+  border-radius: 8px;
+  font-size: 16px;
+  color: #2d3748;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #3182ce;
+  box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.3);
+}
+
+/* --- Specific styling for time inputs --- */
+.time-group {
+  gap: 15px;
+  margin-bottom: 0;
+}
+
+.time-label {
+    font-size: 13px !important;
+    font-weight: normal !important;
+    color: #718096 !important;
+}
+
+/* --- Submit Button --- */
+.btn-submit {
+  width: 100%;
+  padding: 15px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  background: linear-gradient(45deg, #3182ce, #2b6cb0);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  margin-top: 20px;
+}
+
+.btn-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(49, 130, 206, 0.4);
+}
+
+/* --- Message Styling --- */
+.message {
+  margin-top: 20px;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.message.success {
+  background-color: #e6fffa;
+  color: #2c7a7b;
+  border: 1px solid #b2f5ea;
+}
+
+.message.error {
+  background-color: #fed7d7;
+  color: #c53030;
+  border: 1px solid #feb2b2;
+}
+
+/* --- Result Box --- */
+.result-box {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f7fafc;
+  border: 1px dashed #cbd5e0;
+  border-radius: 8px;
+}
+
+.result-box p {
+  margin: 5px 0;
+  color: #4a5568;
+}
+
+.result-box strong {
+    color: #2d3748;
+}
+.info-display {
+  background-color: #f4f8ff;
+  border: 1px solid #dbe5f1;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 20px;
+  color: #1a2c50;
+}
+
+.info-display h3 {
+  margin-bottom: 12px;
+  color: #1652b5;
+}
+
+.info-display p,
+.info-display li {
+  margin: 4px 0;
+}
