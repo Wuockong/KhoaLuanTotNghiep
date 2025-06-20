@@ -1,11 +1,11 @@
 import apiClient from "./apiClient";
-import axios from "axios";
+import axiosClient from "./axiosClient";
 
 export const login = ({ card_id }) => {
   return apiClient.post("/users/login", { card_id });
 };
 export const logout = () => {
-  return apiClient.post("/logout");
+  return apiClient.post("/users/logout");
 };
 export const getUserInfo = () => {
   return apiClient.get("/user/info");
@@ -31,11 +31,14 @@ export const getUserName = () => {
 
 export const getAccountInfo = async () => {
   const token = localStorage.getItem("token");
-  const res = await axios.get("/users/account", {
+  const res = await axiosClient.get("/users/account", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
+  console.log("🧪 Raw API response:", res.data);
   return res.data;
 };
 
+
+        

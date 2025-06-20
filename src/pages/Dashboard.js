@@ -9,7 +9,7 @@ function Dashboard() {
     const fetchUser = async () => {
       try {
         const res = await getAccountInfo();
-        setUser(res.user);
+        setUser(res.data);
       } catch (err) {
         console.error("Lỗi lấy thông tin người dùng:", err);
       }
