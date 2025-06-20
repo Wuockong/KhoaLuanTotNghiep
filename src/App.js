@@ -14,7 +14,7 @@ import ServiceLogForm from "./pages/ServiceLogForm";
 import FeedbackPage from "./pages/FeedbackPage";
 import AttemptDetail from "./pages/AttemptDetail";
 import ProfileFormElderly from "./pages/ElderlyPageSwitcher";
-import ProfileFormNurse from "./pages/Nurses/ProfileFormNurse";
+import ProfileFormNurse from "./pages/ProfileNurse";
 import AccountElderly from "./pages/ProfileElderly";
 import EmergencyAlertForm from "./components/EmergencyAlertForm";
 function App() {
