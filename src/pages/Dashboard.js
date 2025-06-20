@@ -10,18 +10,13 @@ function Dashboard() {
 
   const role = localStorage.getItem("role");
   const user_id = localStorage.getItem("user_id");
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         if (!user_id || !role) return;
-        console.log("📦 Token hiện tại:", token);
-        console.log("📤 Headers gửi đi:", api.defaults.headers);
-
-        const endpoint = role === "nurse"
-        ? `/nurses/${user_id}`
-        : `/elderly/${user_id}`;
+        const endpoint = role === "nurse" ? `/nurses/${user_id}` : `/elderly/${user_id}`;
         const res = await api.get(endpoint);
         setUserInfo(res.data.data);
       } catch (err) {
@@ -43,52 +38,52 @@ function Dashboard() {
         <div className="info-card">
           <h3>Thông tin người dùng</h3>
           <div className="info-content">
-            <img src={userInfo.avatar_url || "/avatar-default.png"} alt="avatar" />
+            <div className="image-container">
+              <img src={userInfo.avatar_url || "/avatar-default.png"} alt="avatar" />
+            </div>
             <div className="details">
-              <p><strong>ID:</strong> {userInfo.user_id || userInfo._id}</p>
-              <p><strong>Họ tên:</strong> {userInfo.full_name || "Chưa có"}</p>
-              <p><strong>Giới tính:</strong> {userInfo.gender === true ? "Nam" : userInfo.gender === false ? "Nữ" : "Chưa có"}</p>
-              <p><strong>Ngày sinh:</strong> {userInfo.date_of_birth?.slice(0, 10) || "Chưa có"}</p>
-              <p><strong>Vai trò:</strong> {role === "nurse" ? "Y tá" : "Người cao tuổi"}</p>
-              <p><strong>Lớp:</strong> {userInfo.class || "Chưa có"}</p>
-              <p><strong>Ngành:</strong> {userInfo.major || "Chưa có"}</p>
+              <span className="label">ID:</span><span className="value">{userInfo.user_id || userInfo._id}</span>
+              <span className="label">Họ tên:</span><span className="value">{userInfo.full_name || "Chưa có"}</span>
+              <span className="label">Giới tính:</span><span className="value">{userInfo.gender === true ? "Nam" : userInfo.gender === false ? "Nữ" : "Chưa có"}</span>
+              <span className="label">Ngày sinh:</span><span className="value">{userInfo.date_of_birth?.slice(0, 10) || "Chưa có"}</span>
+              <span className="label">Vai trò:</span><span className="value">{role === "nurse" ? "Y tá" : "Người cao tuổi"}</span>
+              <span className="label">Lớp:</span><span className="value">{userInfo.class || "Chưa có"}</span>
+              <span className="label">Ngành:</span><span className="value">{userInfo.major || "Chưa có"}</span>
             </div>
           </div>
-        </div>
-
-        <div className="stats-group">
-          <div className="stat-card">🔔 <p>Nhắc nhở</p> <h2>0</h2></div>
-          <div className="stat-card blue">📅 <p>Lịch chăm sóc</p> <h2>0</h2></div>
-          <div className="stat-card orange">🧪 <p>Bài test</p> <h2>0</h2></div>
         </div>
       </div>
 
       <div className="feature-grid">
-        <div className="feature-box" onClick={() => navigate("/profile")}>📋 Hồ sơ cá nhân</div>
+        <div className="feature-box" onClick={() => navigate("/profile")}>
+          <span className="icon">📋</span><p>Hồ sơ cá nhân</p>
+        </div>
+
+        <div className="feature-box"><span className="icon">🔔</span><p>Nhắc nhở</p><h2>0</h2></div>
+        <div className="feature-box"><span className="icon">📅</span><p>Lịch chăm sóc</p></div>
 
         {role === "elderly" && (
           <>
-            <div className="feature-box" onClick={() => navigate("/survey")}>📄 Làm khảo sát nhu cầu</div>
-            <div className="feature-box" onClick={() => navigate("/matching")}>🧭 Matching</div>
-            <div className="feature-box" onClick={() => navigate("/payment")}>💰 Thực hiện thanh toán</div>
-            <div className="feature-box" onClick={() => navigate("/history")}>📜 Lịch sử giao dịch</div>
-
-            <div className="feature-box" onClick={() => navigate("/feedback")}>📤 Gửi phản hồi</div>
-            <div className="feature-box" onClick={() => navigate("/disputes")}>⚖️ Tranh chấp</div>
+            <div className="feature-box" onClick={() => navigate("/survey")}><span className="icon">📄</span><p>Làm khảo sát nhu cầu</p></div>
+            <div className="feature-box" onClick={() => navigate("/matching")}><span className="icon">🧭</span><p>Matching</p></div>
+            <div className="feature-box" onClick={() => navigate("/payment")}><span className="icon">💰</span><p>Thực hiện thanh toán</p></div>
+            <div className="feature-box" onClick={() => navigate("/history")}><span className="icon">📜</span><p>Lịch sử giao dịch</p></div>
+            <div className="feature-box" onClick={() => navigate("/feedback")}><span className="icon">📤</span><p>Gửi phản hồi</p></div>
+            <div className="feature-box" onClick={() => navigate("/disputes")}><span className="icon">⚖️</span><p>Tranh chấp</p></div>
           </>
         )}
 
         {role === "nurse" && (
           <>
-            <div className="feature-box">📝 Làm bài test</div>
-            <div className="feature-box">📄 Làm khảo sát</div>
-            <div className="feature-box" onClick={() => navigate("/matching")}>📬 Matching</div>
-            <div className="feature-box">⭐ Nhận đánh giá</div>
-            <div className="feature-box">🏆 Hồ sơ + rank</div>
+            <div className="feature-box"><span className="icon">📝</span><p>Làm bài test</p></div>
+            <div className="feature-box"><span className="icon">📄</span><p>Làm khảo sát</p></div>
+            <div className="feature-box" onClick={() => navigate("/matching")}><span className="icon">📬</span><p>Matching</p></div>
+            <div className="feature-box"><span className="icon">⭐</span><p>Nhận đánh giá</p></div>
+            <div className="feature-box"><span className="icon">🏆</span><p>Hồ sơ + rank</p></div>
           </>
         )}
 
-        <div className="feature-box">📬 Hộp thư</div>
+        <div className="feature-box"><span className="icon">📬</span><p>Hộp thư</p></div>
       </div>
     </div>
   );
