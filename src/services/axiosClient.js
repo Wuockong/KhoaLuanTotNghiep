@@ -1,19 +1,25 @@
-import axios from 'axios';
+// src/services/axiosClient.js
+import axios from "axios";
 
 const axiosClient = axios.create({
-  baseURL: 'https://phuchwa-project.onrender.com/api',
-  headers: {
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
-  },
+  baseURL: "https://phuchwa-project.onrender.com/api",
 });
 
-// Optional: auto add token nếu cần
 axiosClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
+
+  config.headers = {
+    ...config.headers,
+    Accept: "application/json",
+    "Content-Type": "application/json", // ✅ Thêm dòng này
+  };
+
   if (token) {
-    config.headers['Authorization'] = `Bearer ${token}`;
+    config.headers.Authorization = `Bearer ${token}`;
   }
+
+  console.log("✅ Headers thực sự gửi đi:", config.headers);
+
   return config;
 });
 
