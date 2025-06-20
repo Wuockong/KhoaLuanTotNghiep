@@ -1,0 +1,35 @@
+.custom-marker {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: red;
+  border: 3px solid white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.custom-marker.user {
+  background-color: #007bff;
+}
+
+.custom-marker.hospital {
+  background-color: #28a745;
+}
+
+.custom-tooltip {
+  position: absolute;
+  top: -35px;
+  left: 35px;
+  background-color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+  font-size: 12px;
+  display: none;
+  z-index: 1000;
+}
+
+.leaflet-marker-icon:hover .custom-tooltip {
+  display: block;
+}
