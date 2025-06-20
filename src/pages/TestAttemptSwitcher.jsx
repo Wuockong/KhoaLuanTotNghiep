@@ -28,7 +28,8 @@ const TestAttemptSwitcher = () => {
       </div>
 
       <div style={{ padding: "1rem" }}>
-        {showRJFS ? <TestFormNurses /> : <TestAttemptRJFS />}
+        {/* {showRJFS ? <TestFormNurses /> : <TestAttemptRJFS />}{" "} */}
+        {showRJFS ? <TestAttemptRJFS /> : <TestFormNurses />}
       </div>
     </div>
   );
