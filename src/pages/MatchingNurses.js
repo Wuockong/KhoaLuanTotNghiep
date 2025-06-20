@@ -56,6 +56,7 @@ function MatchingNurses() {
   };
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   const calculateAge = (dob) => {
     const birthDate = new Date(dob);
     const ageDifMs = Date.now() - birthDate.getTime();
@@ -126,12 +127,18 @@ function MatchingNurses() {
     <div className="matching-nurse-container">
       <h2>🤝 Chọn Y tá để kết nối</h2>
 >>>>>>> Stashed changes
+=======
+  return (
+    <div className="matching-nurse-container">
+      <h2>🤝 Chọn Y tá để kết nối</h2>
+>>>>>>> Stashed changes
       {loading ? (
         <p>⏳ Đang tải danh sách...</p>
       ) : (
         <div className="elderly-list">
           {nurses.map((nurse, index) => (
             <div className="elderly-card" key={index}>
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
               <h4>{el.full_name}</h4>
               <p>📅 Ngày sinh: {el.date_of_birth}</p>
@@ -143,6 +150,8 @@ function MatchingNurses() {
               <button className="match-btn" onClick={() => handleMatch(el._id)}>
                 Matching
 =======
+=======
+>>>>>>> Stashed changes
               <h4>{nurse.full_name}</h4>
               <p>🏫 Trường: {nurse.school}</p>
               <p>🧪 Điểm test: {nurse.test_score}</p>
@@ -150,6 +159,9 @@ function MatchingNurses() {
               <p>📞 SĐT: {nurse.phone_number}</p>
               <button className="match-btn" onClick={() => handleMatch(nurse.nurse_id)}>
                 Booking
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
               </button>
             </div>

@@ -14,6 +14,9 @@ import TransactionPage from "./pages/transactions/TransactionPage";
 =======
 import TestFormNurses from "./pages/TestAttemptSwitcher";
 import TransactionPage from "./pages/TestAttemptSwitcher";
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 import ServiceLogForm from "./pages/ServiceLogForm";
 import FeedbackPage from "./pages/FeedbackPage";
@@ -37,6 +40,9 @@ import MatchingPage1 from "./pages/Elderly/MatchingPage1";
 import MatchingActions from './pages/Elderly/MatchingActions';
 
 import MatchingPage from "./pages/MatchingPage";
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
 function App() {
@@ -48,9 +54,12 @@ function App() {
       <Navbar />
       <Routes>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         {/* Trang mặc định: nếu đã đăng nhập thì vào dashboard, chưa thì vào login elderly */}
         <Route path="/" element={token ? <Navigate to="/dashboard" /> : <Navigate to="/login-elderly" />} />
 =======
+=======
+>>>>>>> Stashed changes
         <Route
           path="/"
           element={token ? <Navigate to="/dashboard" /> : <Navigate to="/login-elderly" />}
@@ -69,7 +78,10 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/account-elderly" element={<AccountElderly />} />
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
 
         {/* Các trang mới cho elderly */}
         {role === "elderly" && (
@@ -86,6 +98,9 @@ function App() {
 
           </>
         )}
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
         {/* Chức năng dành cho nurse */}

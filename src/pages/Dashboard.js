@@ -103,6 +103,9 @@ function Dashboard() {
         )}
 
         <div className="feature-box">📬 Hộp thư</div>
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
       </div>
     </div>
