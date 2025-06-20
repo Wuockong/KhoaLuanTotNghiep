@@ -6,7 +6,7 @@ function Profile() {
   const [loading, setLoading] = useState(true);
 
   const user_id = localStorage.getItem("user_id");
-  const token = localStorage.getItem("token");
+  //const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchProfile = async () => {

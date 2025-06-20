@@ -10,7 +10,7 @@ function Dashboard() {
 
   const role = localStorage.getItem("role");
   const user_id = localStorage.getItem("user_id");
-  const token = localStorage.getItem("token");
+  //const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchUser = async () => {

@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import "../assets/styles/pages/matching-nurses.css";
 import { getEligibleNurses, postMatching } from "../services/matchingService";
-import { useNavigate } from "react-router-dom";
+//import { useNavigate } from "react-router-dom";
 
 function MatchingNurses() {
   const [nurses, setNurses] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
 
-  const token = localStorage.getItem("token");
-  const elderly_id = localStorage.getItem("user_id");
+  //const token = localStorage.getItem("token");
+  //const elderly_id = localStorage.getItem("user_id");
   const role = localStorage.getItem("role");
 
   useEffect(() => {
