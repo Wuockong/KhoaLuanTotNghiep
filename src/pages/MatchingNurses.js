@@ -48,6 +48,7 @@ function MatchingNurses() {
   };
 
   const calculateAge = (dob) => {
+    if (!dob) return 0;
     const birthDate = new Date(dob);
     const ageDifMs = Date.now() - birthDate.getTime();
     return Math.floor(ageDifMs / (1000 * 60 * 60 * 24 * 365.25));
@@ -56,13 +57,9 @@ function MatchingNurses() {
   const filtered = elderlies.filter((el) => {
     const age = calculateAge(el.date_of_birth);
     const cityMatch = filter.city
-      ? el.current_address?.city
-          ?.toLowerCase()
-          .includes(filter.city.toLowerCase())
+      ? el.current_address?.city?.toLowerCase().includes(filter.city.toLowerCase())
       : true;
-    const genderMatch = filter.gender
-      ? String(el.gender) === filter.gender
-      : true;
+    const genderMatch = filter.gender ? String(el.gender) === filter.gender : true;
     const minAgeMatch = filter.minAge ? age >= parseInt(filter.minAge) : true;
     const maxAgeMatch = filter.maxAge ? age <= parseInt(filter.maxAge) : true;
     return cityMatch && genderMatch && minAgeMatch && maxAgeMatch;
@@ -72,11 +69,7 @@ function MatchingNurses() {
     <div className="matching-nurse-container">
       <h2>🤝 Kết nối với bệnh nhân</h2>
       <div className="filter-row">
-        <select
-          value={filter.city}
-          onChange={(e) =>
-            setFilter((prev) => ({ ...prev, city: e.target.value }))
-          }>
+        <select value={filter.city} onChange={(e) => setFilter((prev) => ({ ...prev, city: e.target.value }))}>
           <option value="">Tất cả thành phố</option>
           <option value="Hà Nội">Hà Nội</option>
           <option value="TP.HCM">TP.HCM</option>
@@ -85,31 +78,13 @@ function MatchingNurses() {
           <option value="Hải Phòng">Hải Phòng</option>
         </select>
 
-        <select
-          value={filter.gender}
-          onChange={(e) =>
-            setFilter((prev) => ({ ...prev, gender: e.target.value }))
-          }>
+        <select value={filter.gender} onChange={(e) => setFilter((prev) => ({ ...prev, gender: e.target.value }))}>
           <option value="">Giới tính</option>
           <option value="true">Nam</option>
           <option value="false">Nữ</option>
         </select>
-        <input
-          type="number"
-          placeholder="Tuổi từ"
-          value={filter.minAge}
-          onChange={(e) =>
-            setFilter((prev) => ({ ...prev, minAge: e.target.value }))
-          }
-        />
-        <input
-          type="number"
-          placeholder="Tuổi đến"
-          value={filter.maxAge}
-          onChange={(e) =>
-            setFilter((prev) => ({ ...prev, maxAge: e.target.value }))
-          }
-        />
+        <input type="number" placeholder="Tuổi từ" value={filter.minAge} onChange={(e) => setFilter((prev) => ({ ...prev, minAge: e.target.value }))} />
+        <input type="number" placeholder="Tuổi đến" value={filter.maxAge} onChange={(e) => setFilter((prev) => ({ ...prev, maxAge: e.target.value }))} />
       </div>
 
       {loading ? (
@@ -120,14 +95,9 @@ function MatchingNurses() {
             <div className="elderly-card" key={index}>
               <h4>{el.full_name}</h4>
               <p>📅 Ngày sinh: {el.date_of_birth}</p>
-              <p>
-                📍 Địa chỉ: {el.current_address?.street},{" "}
-                {el.current_address?.city}
-              </p>
+              <p>📍 Địa chỉ: {el.current_address?.street}, {el.current_address?.city}</p>
               <p>📞 SĐT: {el.phone_number}</p>
-              <button className="match-btn" onClick={() => handleMatch(el._id)}>
-                Matching
-              </button>
+              <button className="match-btn" onClick={() => handleMatch(el._id)}>Matching</button>
             </div>
           ))}
         </div>

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import "../assets/styles/pages/dashboard.css";
+import { useNavigate } from "react-router-dom";
 import { getAccountInfo } from "../services/authService";
 
 function Dashboard() {
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -67,7 +69,9 @@ function Dashboard() {
           <>
             <div className="feature-box">📝 Làm bài test</div>
             <div className="feature-box">📄 Làm khảo sát</div>
-            <div className="feature-box">📬 Matching</div>
+            <div className="feature-box" onClick={() => navigate("/matching")}>
+              📬 Matching
+            </div>
             <div className="feature-box">⭐ Nhận đánh giá</div>
             <div className="feature-box">🏆 Hồ sơ + rank</div>
           </>
