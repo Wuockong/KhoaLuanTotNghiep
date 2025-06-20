@@ -42,42 +42,35 @@ function Dashboard() {
             </div>
           </div>
         </div>
-
-        <div className="stats-group">
-          <div className="stat-card">🔔 <p>Nhắc nhở</p> <h2>0</h2></div>
-          <div className="stat-card blue">📅 <p>Lịch chăm sóc</p> <h2>0</h2></div>
-          <div className="stat-card orange">🧪 <p>Bài test</p> <h2>0</h2></div>
-        </div>
       </div>
 
       <div className="feature-grid">
-        <div className="feature-box">📋 Hồ sơ cá nhân</div>
+        <div className="feature-box"><span className="icon">📋</span><p>Hồ sơ cá nhân</p></div>
+        <div className="feature-box"><span className="icon">🔔</span><p>Nhắc nhở</p><h2>0</h2></div>
+        <div className="feature-box"><span className="icon">📅</span><p>Lịch chăm sóc</p></div>
 
         {role === "elderly" && (
           <>
-            <div className="feature-box">📄 Làm khảo sát nhu cầu</div>
-            <div className="feature-box">🧭 Matching</div>
-            <div className="feature-box">💰 Thực hiện thanh toán</div>
-            <div className="feature-box">📜 Lịch sử giao dịch</div>
-            <div className="feature-box">⭐ Đánh giá</div>
-            <div className="feature-box">📤 Gửi phản hồi</div>
-            <div className="feature-box">⚖️ Tranh chấp</div>
+            <div className="feature-box"><span className="icon">📄</span><p>Làm khảo sát nhu cầu</p></div>
+            <div className="feature-box"><span className="icon">🧭</span><p>Matching</p></div>
+            <div className="feature-box"><span className="icon">💰</span><p>Thực hiện thanh toán</p></div>
+            <div className="feature-box"><span className="icon">📜</span><p>Lịch sử giao dịch</p></div>
+            <div className="feature-box"><span className="icon">⭐</span><p>Đánh giá</p></div>
+            <div className="feature-box"><span className="icon">📤</span><p>Gửi phản hồi</p></div>
+            <div className="feature-box"><span className="icon">⚖️</span><p>Tranh chấp</p></div>
           </>
         )}
 
         {role === "nurse" && (
           <>
-            <div className="feature-box">📝 Làm bài test</div>
-            <div className="feature-box">📄 Làm khảo sát</div>
-            <div className="feature-box" onClick={() => navigate("/matching")}>
-              📬 Matching
-            </div>
-            <div className="feature-box">⭐ Nhận đánh giá</div>
-            <div className="feature-box">🏆 Hồ sơ + rank</div>
+            <div className="feature-box"><span className="icon">📝</span><p>Làm bài test</p></div>
+            <div className="feature-box"><span className="icon">📄</span><p>Làm khảo sát</p></div>
+            <div className="feature-box" onClick={() => navigate("/matching")}><span className="icon">📬</span><p>Matching</p></div>
+            <div className="feature-box"><span className="icon">⭐</span><p>Nhận đánh giá</p></div>
+            <div className="feature-box"><span className="icon">🏆</span><p>Hồ sơ + rank</p></div>
           </>
         )}
-
-        <div className="feature-box">📬 Hộp thư</div>
+        <div className="feature-box"><span className="icon">📬</span><p>Hộp thư</p></div>
       </div>
     </div>
   );
