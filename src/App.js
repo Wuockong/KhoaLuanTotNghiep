@@ -13,7 +13,7 @@ import TransactionPage from "./pages/TransactionSwitcher";
 import ServiceLogForm from "./pages/ServiceLogForm";
 import FeedbackPage from "./pages/FeedbackPage";
 import AttemptDetail from "./pages/AttemptDetail";
-import ProfileFormElderly from "./pages/ProfileFormElderly";
+import ProfileFormElderly from "./pages/ElderlyPageSwitcher";
 import ProfileFormNurse from "./pages/Nurses/ProfileFormNurse";
 import AccountElderly from "./pages/ProfileElderly";
 import EmergencyAlertForm from "./components/EmergencyAlertForm";
@@ -42,19 +42,19 @@ function App() {
         <Route path="/register-elderly" element={<RegisterElderly />} />
         <Route path="/login-nurse" element={<LoginQR />} />
         <Route path="/register-nurse" element={<CreateCard />} />
-        <Route path="/profile-elderly" element={<ProfileFormElderly />} />
-        <Route path="/nurse" element={<ProfileFormNurse />} />
 
         {/* Trang chính */}
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/profile-elderly" element={<ProfileFormElderly />} />
+        <Route path="/nurse" element={<ProfileFormNurse />} />
         <Route path="/account-elderly" element={<AccountElderly />} />
         <Route path="/alert" element={<EmergencyAlertForm />} />
+        <Route path="/transaction" element={<TransactionPage />} />
+        <Route path="/test" element={<TestFormNurses />} />
 
         {/* Chức năng dành cho nurse */}
         {role === "nurse" && (
           <>
-            <Route path="/transaction" element={<TransactionPage />} />
-            <Route path="/test" element={<TestFormNurses />} />
             <Route path="/matching" element={<MatchingNurses />} />
             <Route path="/servicelog" element={<ServiceLogForm />} />
             <Route path="/feedback" element={<FeedbackPage />} />
