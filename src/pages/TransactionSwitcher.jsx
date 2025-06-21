@@ -22,13 +22,13 @@ const TestAttemptSwitcher = () => {
         }}>
         <span>👵 Chuyển chế độ:</span>
         <ThemeToggle isChecked={showRJFS} onToggle={handleToggle} />
-        <span>
+        {/* <span>
           {showRJFS ? "Chỉnh sửa bằng RJSF" : "Tài khoản người cao tuổi"}
-        </span>
+        </span> */}
       </div>
 
       <div style={{ padding: "1rem" }}>
-        {showRJFS ? <TransactionFormEditor /> : <TransactionPage />}
+        {showRJFS ? <TransactionPage /> : <TransactionFormEditor />}
       </div>
     </div>
   );

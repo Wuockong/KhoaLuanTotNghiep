@@ -9,7 +9,7 @@ import LoginElderly from "./pages/LoginElderly";
 import RegisterElderly from "./pages/RegisterElderly";
 import MatchingNurses from "./pages/MatchingNurses";
 import TestFormNurses from "./pages/TestAttemptSwitcher";
-import TransactionPage from "./pages/TestAttemptSwitcher";
+import TransactionPage from "./pages/TransactionSwitcher";
 import ServiceLogForm from "./pages/ServiceLogForm";
 import FeedbackPage from "./pages/FeedbackPage";
 import AttemptDetail from "./pages/AttemptDetail";
@@ -27,7 +27,7 @@ import Feedback from "./pages/Elderly/Feedback";
 import Disputes from "./pages/Elderly/Disputes";
 import MatchingPage1 from "./pages/Elderly/MatchingPage1";
 import MatchingActions from './pages/Elderly/MatchingActions';
-
+import EmergencyAlertForm from "./components/EmergencyAlertForm";
 //import MatchingPage from "./pages/MatchingPage";
 
 function App() {
@@ -54,6 +54,8 @@ function App() {
         {/* Trang chính */}
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/account-elderly" element={<AccountElderly />} />
+         <Route path="/alert" element={<EmergencyAlertForm />} />
+
 
         {/* Các trang mới cho elderly */}
         {role === "elderly" && (

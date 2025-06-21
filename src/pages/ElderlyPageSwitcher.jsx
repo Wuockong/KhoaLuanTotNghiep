@@ -22,13 +22,13 @@ const ElderlyPageSwitcher = () => {
         }}>
         <span>👵 Chuyển chế độ:</span>
         <ThemeToggle isChecked={showRJFS} onToggle={handleToggle} />
-        <span>
-          {showRJFS ? "Chỉnh sửa bằng RJSF" : "Tài khoản người cao tuổi"}
-        </span>
+        {/* <span>
+          {showRJFS ? "Tài khoản người cao tuổi" : "Chỉnh sửa bằng RJSF"}
+        </span> */}
       </div>
 
       <div style={{ padding: "1rem" }}>
-        {showRJFS ? <ElderlyRJFS /> : <AccountElderly />}
+        {showRJFS ? <AccountElderly /> : <ElderlyRJFS />}
       </div>
     </div>
   );
