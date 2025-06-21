@@ -47,8 +47,6 @@ function Dashboard() {
               <span className="label">Giới tính:</span><span className="value">{userInfo.gender === true ? "Nam" : userInfo.gender === false ? "Nữ" : "Chưa có"}</span>
               <span className="label">Ngày sinh:</span><span className="value">{userInfo.date_of_birth?.slice(0, 10) || "Chưa có"}</span>
               <span className="label">Vai trò:</span><span className="value">{role === "nurse" ? "Y tá" : "Người cao tuổi"}</span>
-              <span className="label">Lớp:</span><span className="value">{userInfo.class || "Chưa có"}</span>
-              <span className="label">Ngành:</span><span className="value">{userInfo.major || "Chưa có"}</span>
             </div>
           </div>
         </div>
