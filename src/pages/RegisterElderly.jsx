@@ -133,12 +133,16 @@ function RegisterElderly() {
               />
             )}
 
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginBottom: '10px' }}>
-              <label style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '10px', maxWidth: '100%' }}>
+              <label htmlFor="isNurseCheckbox" style={{ display: 'flex', whiteSpace: 'nowrap' }}>
                 <input
+                  id="isNurseCheckbox"
                   type="checkbox"
                   checked={isNurse}
-                  onChange={() => setIsNurse(!isNurse)}
+                  onChange={() => {
+                    setIsNurse(!isNurse);
+                    // console.log('isNurse changed to:', !isNurse);
+                  }}
                   style={{ marginRight: '5px' }}
                 />
                 Bạn là y tá?
